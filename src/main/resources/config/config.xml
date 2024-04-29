@@ -3,6 +3,12 @@
 
 <configuration>
     <typeAliases>
+      <typeAlias type="com.example.cleanway.domain.dto.report.CleanReportDto" alias="cleanReportDto"/>
+      <typeAlias type="com.example.cleanway.domain.dto.user.UserDto" alias="userDto"/>
+        <typeAlias type="com.example.cleanway.domain.dto.report.ReportImgDto" alias="reportImgDto"/>
 
+
+
+      <typeAlias type="com.example.cleanway.domain.vo.report.ReportVo" alias="reportVo"/>
     </typeAliases>
 </configuration>

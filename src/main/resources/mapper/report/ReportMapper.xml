@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.cleanway.mapper.report.ReportMapper">
+
+<!-- 제보 작성 -->
+   <insert id="reportInsert">
+       <selectKey keyProperty="reportNumber" order="BEFORE" resultType="long">
+           SELECT SEQ_REPORT.nextval FROM DUAL
+       </selectKey>
+        INSET INTO CLEAN_REPORT(REPORT_NUMBER,USER_NUMBER,SPOT_NUMBER,KEYWORD_NUMBER,
+                                REPORT_CONTENT,REPORT_DATE)
+        VALUES(#{reportNumber},#{userNumber},#{spotNumber},#{keywordNumber},
+               #{reportContent},SYSDATE)
+   </insert>
+
+<!--    제보 키워드 등록-->
+    <insert id="insertKeyword">
+        INSERT INTO REPORT_KEYWORD (KEYWORD_NUMBER, KEYWORD_NAME)
+        VALUES(#{keywordNumber}, #{keywordName})
+    </insert>
+
+<!--    제보 이미지 등록-->
+    <insert id="insertImg">
+        INSERT INTO REPORT_IMG(REPORT_IMG_NUMBER, REPORT_IMG_NAME, REPORT_IMG_PATH, REPORT_IMG_UUID, REPORT_NUMBER)
+        VALUES (SEQ_REPORT_IMG.nextval,#{reportImgName},#{reportImgPath},#{reportImgUuid},#{reportNumber})
+    </insert>
+
+<!--    제보 이미지 보기-->
+    <select id="selectReportImg" resultType="reportImgDto">
+        SELECT REPORT_IMG_NUMBER, REPORT_IMG_NAME, REPORT_IMG_PATH, REPORT_IMG_UUID, REPORT_NUMBER
+        FROM REPORT_IMG
+        WHERE REPORT_NUMBER =#{reportNumber}
+    </select>
+
+
+</mapper>
+
+
+
+
+
+
+
+
+
