@@ -10,15 +10,15 @@ public class ReportVo {
     private Long userNumber;
     private Long keywordNumber;
     private Long spotNumber;
-    private String reportContent;
     private String reportDate;
-    private Long mySpotNumber;
-    private Long reportImgNumber;
-    private String reportImgName;
-    private String reportImgPath;
-    private String reportImgUuid;
     private Double spotLat;
     private Double spotIng;
     private String spotName;
     private String keywordName;
+    private Long reportImgNumber;
+    private String reportImgName;
+    private String reportImgPath;
+    private String reportImgUuid;
+    //이미지 url
+    private String imageUrl;
 }

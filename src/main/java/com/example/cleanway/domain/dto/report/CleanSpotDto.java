@@ -6,8 +6,6 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class CleanSpotDto {
-    private Long mySpotNumber;
     private Long userNumber;
-    private Long reportNumber;
     private Long spotNumber;
 }

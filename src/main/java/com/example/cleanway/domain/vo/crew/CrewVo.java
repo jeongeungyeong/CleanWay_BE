@@ -1,11 +1,11 @@
-package com.example.cleanway.domain.dto.crew;
+package com.example.cleanway.domain.vo.crew;
 
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import org.springframework.stereotype.Component;
 
 @Data
-@NoArgsConstructor
-public class CleanCrewDto {
+@Component
+public class CrewVo {
     private Long crewNumber;
     private Long userNumber;
     private String crewName;
@@ -13,4 +13,7 @@ public class CleanCrewDto {
     private String crewContent;
     private Long crewRecruitment;
     private Long crewRoleNumber;
+    private String crewRoleName;
+    private Long memberCount;
+    private String userNickname;
 }

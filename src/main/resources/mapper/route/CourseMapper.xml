@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.cleanway.mapper.route.CourseMapper">
+
+    <insert id="insertCourse" parameterType="cleanCourseDto">
+        INSERT INTO CLEAN_COURSE(COURSE_NUMBER, COURSE_CATEGORY, COURSE_CATEGORY_NM, SOUTH_NORTH_DIV, SOUTH_NORTH_DIV_NM, AREA_GU,
+                                 DISTANCE, LEAD_TIME, COURSE_LEVEL, COURSE_NAME, DETAIL_COURSE, CPI_IDX, CPI_NAME, X, Y, CPI_CONTENT)
+        VALUES (#{courseNumber}, #{courseCategory}, #{courseCategoryNm}, #{southNorthDiv},
+                #{southNorthDivNm}, #{areaGu}, #{distance}, #{leadTime},
+                #{courseLevel}, #{content}, #{courseName}, #{detailCourse},
+                #{cpiIdx}, #{cpiName}, #{x}, #{y}, #{cpiContent})
+    </insert>
+
+
+
+
+</mapper>
+
+
+
+
+
+
+
+
+

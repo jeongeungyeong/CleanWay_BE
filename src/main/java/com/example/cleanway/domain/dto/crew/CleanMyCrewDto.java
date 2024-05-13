@@ -5,12 +5,8 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class CleanCrewDto {
-    private Long crewNumber;
+public class CleanMyCrewDto {
     private Long userNumber;
-    private String crewName;
-    private String crewWriteTime;
-    private String crewContent;
-    private Long crewRecruitment;
+    private Long crewNumber;
     private Long crewRoleNumber;
 }

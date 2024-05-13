@@ -2,35 +2,63 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.cleanway.mapper.report.ReportMapper">
 
+    <!--    제보 리스트 조회-->
+    <select id="selectReportList" resultType="reportVo">
+        SELECT REPORT_NUMBER,KEYWORD_NUMBER,USER_NUMBER,REPORT_DATE,
+        REPORT_IMG_NUMBER,REPORT_IMG_NAME, REPORT_IMG_UUID, REPORT_IMG_PATH,
+        SPOT_NUMBER,SPOT_LAT,SPOT_ING,SPOT_NAME,
+        KEYWORD_NAME
+        FROM(SELECT REPORT.REPORT_NUMBER, USER_NUMBER, REPORT.KEYWORD_NUMBER,TO_CHAR(REPORT_DATE,'YYYY/MM/DD') REPORT_DATE,
+        RI.REPORT_IMG_NUMBER, REPORT_IMG_NAME, REPORT_IMG_UUID, REPORT_IMG_PATH,
+        CRS.SPOT_NUMBER,SPOT_LAT, SPOT_ING, SPOT_NAME,
+        RK.KEYWORD_NAME
+        FROM CLEAN_REPORT REPORT LEFT JOIN REPORT_IMG RI on REPORT.REPORT_NUMBER = RI.REPORT_NUMBER
+        LEFT JOIN CLEAN_REPORT_SPOT CRS on REPORT.REPORT_NUMBER = CRS.REPORT_NUMBER
+        INNER JOIN REPORT_KEYWORD RK on REPORT.KEYWORD_NUMBER = RK.KEYWORD_NUMBER
+        <trim prefix="WHERE" prefixOverrides="AND">
+            <if test="reportNumber != null">
+                AND REPORT.REPORT_NUMBER =#{reportNumber}
+            </if>
+        </trim>
+        ORDER BY REPORT.REPORT_NUMBER DESC
+        )
+    </select>
+
+
+
 <!-- 제보 작성 -->
-   <insert id="reportInsert">
+   <insert id="reportInsert" parameterType="cleanReportDto">
        <selectKey keyProperty="reportNumber" order="BEFORE" resultType="long">
            SELECT SEQ_REPORT.nextval FROM DUAL
        </selectKey>
-        INSET INTO CLEAN_REPORT(REPORT_NUMBER,USER_NUMBER,SPOT_NUMBER,KEYWORD_NUMBER,
-                                REPORT_CONTENT,REPORT_DATE)
-        VALUES(#{reportNumber},#{userNumber},#{spotNumber},#{keywordNumber},
-               #{reportContent},SYSDATE)
+        INSERT INTO CLEAN_REPORT(REPORT_NUMBER,USER_NUMBER,KEYWORD_NUMBER,REPORT_DATE)
+        VALUES(#{reportNumber},#{userNumber},#{keywordNumber},SYSDATE)
    </insert>
 
-<!--    제보 키워드 등록-->
-    <insert id="insertKeyword">
-        INSERT INTO REPORT_KEYWORD (KEYWORD_NUMBER, KEYWORD_NAME)
-        VALUES(#{keywordNumber}, #{keywordName})
-    </insert>
 
-<!--    제보 이미지 등록-->
-    <insert id="insertImg">
-        INSERT INTO REPORT_IMG(REPORT_IMG_NUMBER, REPORT_IMG_NAME, REPORT_IMG_PATH, REPORT_IMG_UUID, REPORT_NUMBER)
-        VALUES (SEQ_REPORT_IMG.nextval,#{reportImgName},#{reportImgPath},#{reportImgUuid},#{reportNumber})
-    </insert>
-
-<!--    제보 이미지 보기-->
-    <select id="selectReportImg" resultType="reportImgDto">
-        SELECT REPORT_IMG_NUMBER, REPORT_IMG_NAME, REPORT_IMG_PATH, REPORT_IMG_UUID, REPORT_NUMBER
-        FROM REPORT_IMG
-        WHERE REPORT_NUMBER =#{reportNumber}
+<!--   제보 전체수-->
+    <select id="selectTotal" resultType="_int">
+        SELECT COUNT(REPORT_NUMBER)
+        FROM CLEAN_REPORT
     </select>
+
+    <!--제보 넘버 가지고 오기-->
+    <select id="getNextReportNumber" resultType="long">
+        SELECT SEQ_REPORT.nextval FROM DUAL
+    </select>
+
+
+<!--    제보 스팟 정보 삽입-->
+    <insert id="spotInsert" parameterType="reportSpotDto">
+        <selectKey keyProperty="spotNumber" order="BEFORE" resultType="long">
+            select SEQ_REPORT_SPOT.nextval from dual
+        </selectKey>
+        insert into CLEAN_REPORT_SPOT (SPOT_NUMBER,REPORT_NUMBER,SPOT_LAT,SPOT_ING,SPOT_NAME)
+        values(#{spotNumber},#{reportNumber},#{spotLat},#{spotIng},#{spotName})
+
+    </insert>
+
+
 
 
 </mapper>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.cleanway.mapper.report.ReportImgMapper">
+
+<!--    제보 이미지 등록-->
+    <insert id="insertImg">
+        <selectKey keyProperty="reportImgNumber" order="BEFORE" resultType="long">
+            SELECT SEQ_REPORT_IMG.nextval FROM DUAL
+        </selectKey>
+        INSERT INTO REPORT_IMG(REPORT_IMG_NUMBER,REPORT_IMG_NAME,REPORT_IMG_PATH,REPORT_NUMBER)
+        VALUES  (#{reportImgNumber},#{reportImgName},#{reportImgPath},#{reportNumber})
+    </insert>
+
+<!--    제보 이미지 보기-->
+    <select id="selectReportImg" resultType="reportImgDto">
+        SELECT REPORT_IMG_NUMBER, REPORT_IMG_NAME, REPORT_IMG_PATH,REPORT_NUMBER
+        FROM REPORT_IMG
+        WHERE REPORT_NUMBER =#{reportNumber}
+    </select>
+
+
+</mapper>
+
+
+
+
+
+
+
+
+
