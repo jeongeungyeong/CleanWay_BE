@@ -5,11 +5,11 @@
     <!--    제보 리스트 조회-->
     <select id="selectReportList" resultType="reportVo">
         SELECT REPORT_NUMBER,KEYWORD_NUMBER,USER_NUMBER,REPORT_DATE,
-        REPORT_IMG_NUMBER,REPORT_IMG_NAME, REPORT_IMG_UUID, REPORT_IMG_PATH,
+        REPORT_IMG_NUMBER,REPORT_IMG_NAME, REPORT_IMG_PATH,
         SPOT_NUMBER,SPOT_LAT,SPOT_ING,SPOT_NAME,
         KEYWORD_NAME
         FROM(SELECT REPORT.REPORT_NUMBER, USER_NUMBER, REPORT.KEYWORD_NUMBER,TO_CHAR(REPORT_DATE,'YYYY/MM/DD') REPORT_DATE,
-        RI.REPORT_IMG_NUMBER, REPORT_IMG_NAME, REPORT_IMG_UUID, REPORT_IMG_PATH,
+        RI.REPORT_IMG_NUMBER, REPORT_IMG_NAME, REPORT_IMG_PATH,
         CRS.SPOT_NUMBER,SPOT_LAT, SPOT_ING, SPOT_NAME,
         RK.KEYWORD_NAME
         FROM CLEAN_REPORT REPORT LEFT JOIN REPORT_IMG RI on REPORT.REPORT_NUMBER = RI.REPORT_NUMBER
@@ -23,7 +23,6 @@
         ORDER BY REPORT.REPORT_NUMBER DESC
         )
     </select>
-
 
 
 <!-- 제보 작성 -->
@@ -47,7 +46,6 @@
         SELECT SEQ_REPORT.nextval FROM DUAL
     </select>
 
-
 <!--    제보 스팟 정보 삽입-->
     <insert id="spotInsert" parameterType="reportSpotDto">
         <selectKey keyProperty="spotNumber" order="BEFORE" resultType="long">
@@ -58,7 +56,11 @@
 
     </insert>
 
-
+<!--제보 스팟 내 장소로 넣기-->
+    <insert id="mySpotInsert" parameterType="cleanSpotDto">
+        INSERT INTO CLEAN_SPOT (USER_NUMBER, SPOT_NUMBER)
+        VALUES (#{userNumber},#{spotNumber})
+    </insert>
 
 
 </mapper>

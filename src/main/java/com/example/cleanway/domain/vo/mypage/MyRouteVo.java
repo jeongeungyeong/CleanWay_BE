@@ -1,15 +1,15 @@
-package com.example.cleanway.domain.dto.route;
+package com.example.cleanway.domain.vo.mypage;
 
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import org.springframework.stereotype.Component;
 
 @Data
-@NoArgsConstructor
-public class CleanRouteDto {
+@Component
+public class MyRouteVo {
     private Long routeNumber;
     private Long userNumber;
     private String routeName;
-    private Double routeSLat;
+    private Double routeSlat;
     private Double routeSLng;
     private String routeSName;
     private Double routeDLat;

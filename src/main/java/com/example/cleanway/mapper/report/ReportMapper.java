@@ -4,9 +4,6 @@ package com.example.cleanway.mapper.report;
 import com.example.cleanway.domain.dto.report.*;
 import com.example.cleanway.domain.vo.report.ReportVo;
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.springframework.stereotype.Component;
-
 import java.util.List;
 
 @Mapper

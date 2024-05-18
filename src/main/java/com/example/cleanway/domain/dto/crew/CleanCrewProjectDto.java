@@ -3,6 +3,8 @@ package com.example.cleanway.domain.dto.crew;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @Data
 @NoArgsConstructor
 public class CleanCrewProjectDto {
@@ -21,4 +23,8 @@ public class CleanCrewProjectDto {
     private Double projectVLat;
     private Double projectDLng;
     private Double projectDLat;
+    private Long projectRouteNumber;
+    private String projectSName;
+    private String projectVName;
+    private String projectDName;
 }

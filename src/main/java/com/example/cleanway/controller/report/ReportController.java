@@ -40,29 +40,6 @@ public class ReportController {
 
     }
 
-    /*@PostMapping("/add")
-    @Operation(summary = "제보 등록", description = "새로운 제보를 등록합니다.")
-    public ResponseEntity<String> addReport(@Valid @RequestPart CleanReportDto cleanReportDto,
-                                            @RequestParam("base64Image") String base64Image,
-                                            @RequestBody ReportSpotDto reportSpotDto,
-                                            BindingResult bindingResult){
-        try{
-            //제보등록
-            reportService.reportRegister(cleanReportDto);
-            Long reportNumber = cleanReportDto.getReportNumber();
-            //제보 이미지 등록
-            reportImgService.saveFileFromBase64(base64Image,reportNumber);
-//            위치 정보 등록
-            reportSpotDto.setReportNumber(reportNumber);
-            reportService.spotRegister(reportSpotDto);
-
-//            성공적으로 등록
-            return ResponseEntity.status(HttpStatus.CREATED).body("제보가 성공적으로 등록됐습니다!");
-        } catch (IOException e){
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("제보 등록에 실패했습니다!");
-        }
-    }*/
     @PostMapping("/add")
     @Operation(summary = "제보 등록", description = "새로운 제보를 등록합니다.")
     public ResponseEntity<String> addReport(@Valid @RequestBody ReportRequestDto reportRequestDto,
@@ -87,4 +64,6 @@ public class ReportController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("제보 등록에 실패했습니다!");
         }
     }
+
+//    제보 장소 즐겨찾기
 }

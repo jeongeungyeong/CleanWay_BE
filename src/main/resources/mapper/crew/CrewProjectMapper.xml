@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.cleanway.mapper.crew.CrewProjectMapper">
+    <!--    크루 프로젝트 등록-->
+    <insert id="crewProjectInsert" parameterType="cleanCrewProjectDto">
+        <selectKey keyProperty="crewProjectNumber" order="BEFORE" resultType="long">
+            select SEQ_CLEAN_CREW_PROJECT.nextval FROM DUAL
+        </selectKey>
+        INSERT INTO CLEAN_CREW_PROJECT(CREW_PROJECT_NUMBER,CREW_NUMBER,PROJECT_ROLE_NUMBER,
+        USER_NUMBER,PROJECT_WRITE_TIME,PROJECT_CONTENT,
+        PROJECT_RECRUITMENT,PROJECT_DATE,PROJECT_TIME,
+        PROJECT_SLNG,PROJECT_SLAT,PROJECT_VLNG,
+        PROJECT_VLAT,PROJECT_DLNG,PROJECT_DLAT,
+        PROJECT_SNAME,PROJECT_VNAME,PROJECT_DNAME)
+        VALUES (#{crewProjectNumber},#{crewNumber},1,#{userNumber},
+        SYSDATE,#{projectContent},#{projectRecruitment},#{projectDate},
+        #{projectTime},#{projectSLng},#{projectSLat},#{projectVLng},
+        #{projectVLat},#{projectDLng},#{projectDLat},
+        #{projectSName},#{projectVName},#{projectDName})
+    </insert>
+
+<!--    크루 프로젝트 참여-->
+    <insert id="projectJoinInsert" parameterType="cleanMyProjectDto">
+        INSERT INTO CLEAN_MY_PROJECT(CREW_PROJECT_NUMBER,USER_NUMBER,
+                                     PROJECT_ROLE_NUMBER,CREW_NUMBER,
+                                     PROJECT_JOIN_DATE)
+                    VALUES (#{crewProjectNumber},#{userNumber},
+                            #{projectRoleNumber},#{crewNumber},
+                            sysdate)
+    </insert>
+    
+
+
+</mapper>
+
+
+
+
+
+
+
+
+

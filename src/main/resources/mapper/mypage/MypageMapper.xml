@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.example.cleanway.mapper.mypage.MypageMapper">
+
+    <!--내 장소 보기-->
+    <select id="selectMySpot" parameterType="long" resultType="mySpotVo">
+        select CS.USER_NUMBER, CS.SPOT_NUMBER,
+               CRS.REPORT_NUMBER,CRS.SPOT_LAT,CRS.SPOT_ING,SPOT_NAME
+        from CLEAN_SPOT CS JOIN CLEAN_REPORT_SPOT CRS on CS.SPOT_NUMBER = CRS.SPOT_NUMBER
+        where USER_NUMBER=#{userNumber}
+    </select>
+
+    <!--내 코스 보기-->
+    <select id="selectRouteList" parameterType="long" resultType="cleanRouteDto">
+        select route_number, user_number, route_name,
+               route_slat, route_slng, route_sname,
+               route_dlat, route_dlng, route_dname,
+               route_v1lat, route_v1lng, route_v1name,
+               route_v2lat, route_v2lng, route_v2name,
+               route_v3lat, route_v3lng, route_v3name
+        from CLEAN_ROUTE
+        where USER_NUMBER=#{userNumber}
+    </select>
+
+</mapper>
+
+
+
+
+
+
+
+
+

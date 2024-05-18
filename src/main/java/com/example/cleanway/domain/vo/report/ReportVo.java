@@ -18,7 +18,6 @@ public class ReportVo {
     private Long reportImgNumber;
     private String reportImgName;
     private String reportImgPath;
-    private String reportImgUuid;
     //이미지 url
     private String imageUrl;
 }

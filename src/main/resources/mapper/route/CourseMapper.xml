@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.cleanway.mapper.route.CourseMapper">
-
+<!--api-->
     <insert id="insertCourse" parameterType="cleanCourseDto">
         INSERT INTO CLEAN_COURSE(COURSE_NUMBER, COURSE_CATEGORY, COURSE_CATEGORY_NM, SOUTH_NORTH_DIV, SOUTH_NORTH_DIV_NM, AREA_GU,
                                  DISTANCE, LEAD_TIME, COURSE_LEVEL, COURSE_NAME, DETAIL_COURSE, CPI_IDX, CPI_NAME, X, Y, CPI_CONTENT)
@@ -11,7 +11,31 @@
                 #{cpiIdx}, #{cpiName}, #{x}, #{y}, #{cpiContent})
     </insert>
 
-
+<!--    코스 생성 -->
+    <insert id="insertMyCourse" parameterType="cleanRouteDto">
+        <selectKey keyProperty="routeNumber" order="BEFORE" resultType="long">
+            select SEQ_CLEAN_COURSE.nextval FROM DUAL
+        </selectKey>
+        insert into CLEAN_ROUTE
+        values (#{routeNumber},#{userNumber},#{routeName},#{routeSLat},
+                #{routeSlng},#{routeSName},#{routeDLat},#{routeDLng},
+                #{routeDName},#{routeV1Lat},#{routeV1Lng},
+                #{routeV1Name},#{routeV2Lat},#{routeV2Lng},
+                #{routeV2Name},#{routeV3Lat},#{routeV3Lng},
+                #{routeV3Name})
+    </insert>
+    
+<!--내 코스 보기-->
+<select id="selectRouteList" parameterType="long" resultType="cleanRouteDto">
+    select route_number, user_number, route_name,
+           route_slat, route_slng, route_sname,
+           route_dlat, route_dlng, route_dname,
+           route_v1lat, route_v1lng, route_v1name,
+           route_v2lat, route_v2lng, route_v2name,
+           route_v3lat, route_v3lng, route_v3name
+    from CLEAN_ROUTE
+    where USER_NUMBER=#{userNumber}
+</select>
 
 
 </mapper>

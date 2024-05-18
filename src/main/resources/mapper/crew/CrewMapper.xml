@@ -31,11 +31,44 @@
                 #{crewContent},#{crewRecruitment},1)
     </insert>
 
+<!--    크루 모집 디테일 화면 -->
+    <select id="selectCrewDetail" parameterType="long" resultType="crewDetailVo">
+        SELECT CC.CREW_NUMBER, CU.USER_NUMBER,CC.CREW_NAME, CREW_WRITE_TIME,
+               CREW_CONTENT,CREW_RECRUITMENT,CC.CREW_ROLE_NUMBER,CCP.CREW_PROJECT_NUMBER,
+               TO_CHAR(CCP.PROJECT_DATE, 'YYYY/MM/DD') AS PROJECT_DATE,PROJECT_TIME,
+               CCP.PROJECT_SLAT,CCP.PROJECT_SLNG,CCP.PROJECT_SNAME,
+               CCP.PROJECT_VLAT,CCP.PROJECT_VLNG,CCP.PROJECT_VNAME,
+               CCP.PROJECT_DLAT,CCP.PROJECT_DLNG,CCP.PROJECT_DNAME,
+               CU.USER_NICKNAME,(
+                   SELECT COUNT(*)
+                   FROM CLEAN_MY_CREW
+                   WHERE CREW_NUMBER = CC.CREW_NUMBER
+                     AND CREW_ROLE_NUMBER IN (1, 2)
+               ) AS MEMBER_COUNT
+        FROM CLEAN_CREW CC JOIN CLEAN_USER CU ON CC.USER_NUMBER = CU.USER_NUMBER
+                           JOIN CLEAN_CREW_PROJECT CCP on CC.CREW_NUMBER = CCP.CREW_NUMBER
+        WHERE CC.CREW_NUMBER =#{crewNumber}
+    </select>
+
     <!--크루 참여-->
-    <insert id="crewInsertCount" parameterType="cleanMyCrewDto">
-        INSERT INTO CLEAN_MY_CREW(CREW_NUMBER, USER_NUMBER, CREW_ROLE_NUMBER)
-        VALUES (#{crewNumber},#{userNumber},2)
+    <insert id="crewJoinInsert" parameterType="cleanMyCrewDto">
+        INSERT INTO CLEAN_MY_CREW(CREW_NUMBER, USER_NUMBER, CREW_ROLE_NUMBER,CREW_JOIN_DATE)
+        VALUES (#{crewNumber},#{userNumber},#{crewRoleNumber},sysdate)
     </insert>
+
+    <!--    내 크루 목록 조회-->
+    <select id="selectMyCrewList" parameterType="long" resultType="myCrewVo">
+        select CU.USER_NUMBER, CC.CREW_NUMBER, CMC.CREW_ROLE_NUMBER, CMC.CREW_JOIN_DATE,
+               CU.USER_NICKNAME,CC.CREW_NAME,CC.CREW_RECRUITMENT,(
+                   SELECT COUNT(*)
+                   FROM CLEAN_MY_CREW
+                   WHERE CREW_NUMBER = CC.CREW_NUMBER
+                     AND CREW_ROLE_NUMBER IN (1, 2)
+               ) AS MEMBER_COUNT
+        from CLEAN_MY_CREW CMC join CLEAN_USER CU on CMC.USER_NUMBER = CU.USER_NUMBER
+                               JOIN CLEAN_CREW CC on CMC.CREW_NUMBER = CC.CREW_NUMBER
+        WHERE CU.USER_NUMBER=#{userNumber}
+    </select>
 
     <!--    크루 참여 인원 알아보기-->
     <select id="countCrewMembers" resultType="_int">
@@ -51,25 +84,22 @@
         WHERE CREW_NUMBER = #{crewNumber} AND USER_NUMBER = #{userNumber}
     </delete>
 
-    <!--    크루 프로젝트 조회 -->
 
-<!--    크루 프로젝트 등록-->
-    <insert id="crewProjectInsert" parameterType="cleanCrewProjectDto">
-        <selectKey keyProperty="crewProjectNumber" order="BEFORE" resultType="long">
-            select SEQ_CLEAN_CREW_PROJECT.nextval FROM DUAL
-        </selectKey>
-        INSERT INTO CLEAN_CREW_PROJECT(CREW_PROJECT_NUMBER,CREW_NUMBER,PROJECT_ROLE_NUMBER,
-                                       USER_NUMBER,PROJECT_WRITE_TIME,PROJECT_CONTENT,
-                                       PROJECT_RECRUITMENT,PROJECT_DATE,PROJCET_TIME,
-                                       PROJECT_SLNG,PROJECT_SLAT,PROJECT_VLNG,
-                                       PROJECT_VLAT,PROJECT_DLNG,PROJECT_DLAT)
-        VALUES (#{crewProjectNumber},#{crewNumber},1,#{userNumber},
-               SYSDATE,#{projectContent},#{projectRecruiument},#{projectDate},
-               #{projectTime},#{projectSLng},#{projectSLat},#{projectVLng},
-               #{projectVLat},#{projectDLng},#{projectDLat})
-    </insert>
-
-
+<!--크루방 단건 조회-->
+    <select id="selectCrewOne" resultType="crewTeamVo">
+        SELECT C.CREW_NUMBER, C.USER_NUMBER, CREW_NAME, CREW_WRITE_TIME, CREW_CONTENT,
+               CREW_RECRUITMENT, C.CREW_ROLE_NUMBER, USER_NICKNAME,CREW_ROLE_NAME,
+               CREW_PROJECT_NUMBER, PROJECT_WRITE_TIME, PROJECT_RECRUITMENT,
+               PROJECT_DATE, PROJECT_TIME,  (
+                   SELECT COUNT(*)
+                   FROM CLEAN_MY_PROJECT
+                   WHERE CREW_PROJECT_NUMBER = CP.CREW_PROJECT_NUMBER
+                     AND PROJECT_ROLE_NUMBER IN (1, 2)
+               ) AS MEMBER_COUNT
+        FROM CLEAN_CREW C JOIN CLEAN_USER CU on C.USER_NUMBER = CU.USER_NUMBER
+             JOIN CREW_ROLE CR on C.CREW_ROLE_NUMBER = CR.CREW_ROLE_NUMBER
+            JOIN CLEAN_CREW_PROJECT CP ON CREW_NUMBER = {crewNumber}
+    </select>
 
 </mapper>
 

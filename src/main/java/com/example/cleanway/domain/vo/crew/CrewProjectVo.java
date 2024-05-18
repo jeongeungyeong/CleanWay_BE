@@ -1,13 +1,17 @@
 package com.example.cleanway.domain.vo.crew;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import org.springframework.stereotype.Component;
 
 @Data
 @Component
 public class CrewProjectVo {
+    @Schema(description = "크루 번호")
     private Long crewNumber;
+    @Schema(description = "회원 번호")
     private Long userNumber;
+    @Schema(description = "크루 이름")
     private String crewName;
     private String crewWriteTime;
     private String crewContent;
@@ -28,4 +32,9 @@ public class CrewProjectVo {
     private Double projectDLat;
     private String projectRoleName;
     private String crewRoleName;
+    private String userNickname;
+    private Long projectRouteNumber;
+    private String projectSName;
+    private String projectVName;
+    private String projectDName;
 }

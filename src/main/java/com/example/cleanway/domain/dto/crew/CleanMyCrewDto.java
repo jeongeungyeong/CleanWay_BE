@@ -9,4 +9,5 @@ public class CleanMyCrewDto {
     private Long userNumber;
     private Long crewNumber;
     private Long crewRoleNumber;
+    private String crewJoinDate;
 }
