@@ -1,11 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.cleanway.mapper.mypage.MypageMapper">
+<!--회원 정보 조회-->
+    <select id="selectUser" resultType="userDto">
+        SELECT USER_NUMBER, USER_EMAIL, USER_NICKNAME,PROFILE_IMAGE_PATH
+        FROM CLEAN_USER
+        WHERE USER_NUMBER =#{userNumber}
+    </select>
+
+
+    <!--닉네임 수정-->
+   <update id="updateNickname" parameterType="myInfoVo">
+    update CLEAN_USER
+    set USER_NICKNAME = #{newNickname}
+    where USER_NUMBER = #{userNumber};
+   </update>
+
 
     <!--내 장소 보기-->
     <select id="selectMySpot" parameterType="long" resultType="mySpotVo">
         select CS.USER_NUMBER, CS.SPOT_NUMBER,
-               CRS.REPORT_NUMBER,CRS.SPOT_LAT,CRS.SPOT_ING,SPOT_NAME
+               CRS.REPORT_NUMBER,CRS.SPOT_LAT,CRS.SPOT_LNG,SPOT_NAME
         from CLEAN_SPOT CS JOIN CLEAN_REPORT_SPOT CRS on CS.SPOT_NUMBER = CRS.SPOT_NUMBER
         where USER_NUMBER=#{userNumber}
     </select>

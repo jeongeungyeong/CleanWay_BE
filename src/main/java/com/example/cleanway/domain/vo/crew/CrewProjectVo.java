@@ -37,4 +37,5 @@ public class CrewProjectVo {
     private String projectSName;
     private String projectVName;
     private String projectDName;
+    private String projectTitle;
 }

@@ -38,4 +38,10 @@ public void reportRegister(CleanReportDto cleanReportDto) {
 //    제보 스팟 등록
         public void spotRegister(ReportSpotDto reportSpotDto){
         reportMapper.spotInsert(reportSpotDto);}
+
+//    내 장소 등록
+    public void mySpotRegister(CleanSpotDto cleanSpotDto){
+        reportMapper.mySpotInsert(cleanSpotDto);
+    }
 }
+

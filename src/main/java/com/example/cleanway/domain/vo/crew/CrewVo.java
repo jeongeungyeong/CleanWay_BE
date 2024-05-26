@@ -27,7 +27,4 @@ public class CrewVo {
     private Long memberCount;
     @Schema(description = "회원 닉네임")
     private String userNickname;
-    @Schema(description = "크루 가입 날짜")
-    private String crewJoinDate;
-
 }

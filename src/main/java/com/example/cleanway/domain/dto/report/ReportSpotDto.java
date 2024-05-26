@@ -8,9 +8,10 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ReportSpotDto {
     private Long spotNumber;
-    private Double spotLat;
-    private Double spotIng;
-    private String spotName;
     @Schema(description = "제보번호")
     private Long reportNumber;
+    private Double spotLat;
+    private Double spotLng;
+    private String spotName;
+
 }

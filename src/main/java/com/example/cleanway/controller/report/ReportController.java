@@ -1,9 +1,6 @@
 package com.example.cleanway.controller.report;
 
-import com.example.cleanway.domain.dto.report.CleanReportDto;
-import com.example.cleanway.domain.dto.report.ReportKeywordDto;
-import com.example.cleanway.domain.dto.report.ReportRequestDto;
-import com.example.cleanway.domain.dto.report.ReportSpotDto;
+import com.example.cleanway.domain.dto.report.*;
 import com.example.cleanway.domain.vo.report.ReportVo;
 import com.example.cleanway.service.report.ReportImgService;
 import com.example.cleanway.service.report.ReportService;
@@ -11,6 +8,9 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -24,6 +24,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/report")
 @RequiredArgsConstructor
+@Slf4j
 @Tag(name = "Report", description = "제보 API")
 public class ReportController {
     private final ReportService reportService;
@@ -43,9 +44,15 @@ public class ReportController {
     @PostMapping("/add")
     @Operation(summary = "제보 등록", description = "새로운 제보를 등록합니다.")
     public ResponseEntity<String> addReport(@Valid @RequestBody ReportRequestDto reportRequestDto,
+                                            @SessionAttribute("userNumber") Long userNumber,
                                             BindingResult bindingResult) {
 
+        Logger logger = LoggerFactory.getLogger(ReportController.class);
+
+        logger.info("Received reportRequestDto: {}", reportRequestDto);
+
         try {
+            reportRequestDto.getCleanReportDto().setUserNumber(userNumber);
             // 제보등록
             reportService.reportRegister(reportRequestDto.getCleanReportDto());
             Long reportNumber = reportRequestDto.getCleanReportDto().getReportNumber();
@@ -66,4 +73,19 @@ public class ReportController {
     }
 
 //    제보 장소 즐겨찾기
+@PostMapping("/saveSpot/{spotNumber}")
+    @Operation(summary = "제보 장소 저장", description = "제보된 장소를 내 장소에 저장합니다.")
+    public ResponseEntity<String> saveSpot(@PathVariable Long spotNumber,
+                                           @SessionAttribute("userNumber") Long userNumber){
+    CleanSpotDto cleanSpotDto = new CleanSpotDto();
+    cleanSpotDto.setSpotNumber(spotNumber);
+    cleanSpotDto.setUserNumber(userNumber);
+
+    try{reportService.mySpotRegister(cleanSpotDto);
+    return ResponseEntity.status(HttpStatus.CREATED).body("내 장소에 성공적으로 등록됐습니다.");
+    } catch (Exception e){
+        e.printStackTrace();
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("내 장소에 저장을 실패했습니다.");
+    }
+}
 }

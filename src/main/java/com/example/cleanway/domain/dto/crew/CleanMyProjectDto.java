@@ -6,6 +6,7 @@ import org.springframework.stereotype.Component;
 @Data
 @Component
 public class CleanMyProjectDto {
+    private Long myProjectJoinNumber;
     private Long userNumber;
     private Long crewNumber;
     private Long crewProjectNumber;

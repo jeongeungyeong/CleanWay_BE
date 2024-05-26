@@ -6,11 +6,11 @@
     <select id="selectReportList" resultType="reportVo">
         SELECT REPORT_NUMBER,KEYWORD_NUMBER,USER_NUMBER,REPORT_DATE,
         REPORT_IMG_NUMBER,REPORT_IMG_NAME, REPORT_IMG_PATH,
-        SPOT_NUMBER,SPOT_LAT,SPOT_ING,SPOT_NAME,
+        SPOT_NUMBER,SPOT_LAT,SPOT_LNG,SPOT_NAME,
         KEYWORD_NAME
         FROM(SELECT REPORT.REPORT_NUMBER, USER_NUMBER, REPORT.KEYWORD_NUMBER,TO_CHAR(REPORT_DATE,'YYYY/MM/DD') REPORT_DATE,
         RI.REPORT_IMG_NUMBER, REPORT_IMG_NAME, REPORT_IMG_PATH,
-        CRS.SPOT_NUMBER,SPOT_LAT, SPOT_ING, SPOT_NAME,
+        CRS.SPOT_NUMBER,SPOT_LAT, SPOT_LNG, SPOT_NAME,
         RK.KEYWORD_NAME
         FROM CLEAN_REPORT REPORT LEFT JOIN REPORT_IMG RI on REPORT.REPORT_NUMBER = RI.REPORT_NUMBER
         LEFT JOIN CLEAN_REPORT_SPOT CRS on REPORT.REPORT_NUMBER = CRS.REPORT_NUMBER
@@ -51,9 +51,8 @@
         <selectKey keyProperty="spotNumber" order="BEFORE" resultType="long">
             select SEQ_REPORT_SPOT.nextval from dual
         </selectKey>
-        insert into CLEAN_REPORT_SPOT (SPOT_NUMBER,REPORT_NUMBER,SPOT_LAT,SPOT_ING,SPOT_NAME)
-        values(#{spotNumber},#{reportNumber},#{spotLat},#{spotIng},#{spotName})
-
+        insert into CLEAN_REPORT_SPOT (SPOT_NUMBER, REPORT_NUMBER, SPOT_LAT, SPOT_LNG, SPOT_NAME)
+        values (#{spotNumber}, #{reportNumber}, #{spotLat}, #{spotLng}, #{spotName})
     </insert>
 
 <!--제보 스팟 내 장소로 넣기-->

@@ -23,6 +23,8 @@ public interface ReportMapper {
 //    제보 스팟 등록
     public void spotInsert(ReportSpotDto reportSpotDto);
 
+//    내 장소 등록
+    public void mySpotInsert(CleanSpotDto cleanSpotDto);
 
 
 }

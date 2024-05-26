@@ -1,10 +1,11 @@
 package com.example.cleanway.controller.crew;
 
 import com.example.cleanway.domain.dto.crew.CleanMyCrewDto;
+import com.example.cleanway.domain.dto.crew.CleanMyProjectDto;
 import com.example.cleanway.domain.dto.crew.CrewRequestDto;
+import com.example.cleanway.domain.response.CrewSearchResponse;
 import com.example.cleanway.domain.vo.crew.CrewDetailVo;
 import com.example.cleanway.domain.vo.crew.CrewVo;
-import com.example.cleanway.domain.vo.crew.MyCrewVo;
 import com.example.cleanway.service.crew.CrewProjectService;
 import com.example.cleanway.service.crew.CrewService;
 import com.example.cleanway.service.mypage.MypageService;
@@ -12,17 +13,22 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import java.text.SimpleDateFormat;
+
 import java.util.List;
 
 @RestController
 @RequestMapping("/crew")
 @RequiredArgsConstructor
+@Slf4j
 @Tag(name = "Crew", description = "크루 API")
 public class CrewController {
     private final CrewService crewService;
@@ -37,7 +43,74 @@ public class CrewController {
 
         return crewList;
     }
-// 크루 등록
+//    크루 검색어 써치
+    @GetMapping("/search")
+    @Operation(summary = "크루 검색어 조회", description = "등록된 크루를 검색을 통해 조회합니다.")
+    public ResponseEntity<CrewSearchResponse> searchCrewByWord(@RequestParam("searchWord") String searchWord) {
+        List<CrewVo> crewByWordList = crewService.findCrewByWord(searchWord);
+        CrewSearchResponse response = new CrewSearchResponse(crewByWordList, searchWord);
+        return ResponseEntity.ok(response);
+    }
+
+/*// 크루 등록
+    @PostMapping("/add")
+    @Operation(summary = "크루 등록", description = "크루 등록합니다. 최초 등록시 프로젝트도 함께 등록")
+    public ResponseEntity<String> addCrew(@Valid @RequestBody CrewRequestDto crewRequestDto,
+                                          BindingResult bindingResult,
+                                          @SessionAttribute("userNumber") Long userNumber){
+        if (bindingResult.hasErrors()) {
+            return ResponseEntity.badRequest().body("요청 데이터가 올바르지 않습니다.");
+        }
+
+        Logger logger = LoggerFactory.getLogger(CrewController.class);
+
+        logger.info("Received crewRequestDto: {}", crewRequestDto);
+
+        //크루 등록
+        crewRequestDto.getCleanCrewDto().setUserNumber(userNumber);
+        crewService.crewRegister(crewRequestDto);
+        Long crewNumber = crewRequestDto.getCleanCrewDto().getCrewNumber();
+        Long crewRecruitment = crewRequestDto.getCleanCrewDto().getCrewRecruitment();
+        String crewContent = crewRequestDto.getCleanCrewDto().getCrewContent();
+        String crewTag1 = crewRequestDto.getCleanCrewDto().getCrewTag1();
+        String crewTag2 = crewRequestDto.getCleanCrewDto().getCrewTag2();
+        String crewTag3 = crewRequestDto.getCleanCrewDto().getCrewTag3();
+        String crewTag4 = crewRequestDto.getCleanCrewDto().getCrewTag4();
+
+
+        // 크루 참여 (크루장으로 참여)
+        CleanMyCrewDto cleanMyCrewDto = new CleanMyCrewDto();
+        cleanMyCrewDto.setCrewNumber(crewNumber);
+        cleanMyCrewDto.setCrewRoleNumber(1L);
+        cleanMyCrewDto.setUserNumber(userNumber);
+        crewService.crewJoinRegister(cleanMyCrewDto);
+
+        //크루 프로젝트 등록
+        crewRequestDto.getProjectRequestDto().getCleanCrewProjectDto().setCrewNumber(crewNumber);
+        crewRequestDto.getProjectRequestDto().getCleanCrewProjectDto().setProjectRecruitment(crewRecruitment);
+//        추후 세션에서 유저 넘버 등록
+        crewRequestDto.getProjectRequestDto().getCleanCrewProjectDto().setUserNumber(userNumber);
+        crewRequestDto.getProjectRequestDto().getCleanCrewProjectDto().setProjectContent(crewContent);
+//        루트 선택 방식
+//        태그 내용 입력
+        crewRequestDto.getProjectRequestDto().getCleanCrewProjectDto().setProjectTag1(crewTag1);
+        crewRequestDto.getProjectRequestDto().getCleanCrewProjectDto().setProjectTag2(crewTag2);
+        crewRequestDto.getProjectRequestDto().getCleanCrewProjectDto().setProjectTag3(crewTag3);
+        crewRequestDto.getProjectRequestDto().getCleanCrewProjectDto().setProjectTag4(crewTag4);
+        crewProjectService.crewProjectRegister(crewRequestDto.getProjectRequestDto());
+        Long crewProjectNumber = crewRequestDto.getProjectRequestDto().getCleanCrewProjectDto().getCrewProjectNumber();
+        //        크루 프로젝트 참여
+        CleanMyProjectDto cleanMyProjectDto = new CleanMyProjectDto();
+        cleanMyProjectDto.setCrewProjectNumber(crewProjectNumber);
+        cleanMyProjectDto.setUserNumber(userNumber);
+        cleanMyProjectDto.setProjectRoleNumber(1L);
+        cleanMyProjectDto.setCrewNumber(crewNumber);
+        crewProjectService.projectJoinRegister(cleanMyProjectDto);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body("크루가 성공적으로 등록됐습니다!");
+    }*/
+
+    // 크루 등록
     @PostMapping("/add")
     @Operation(summary = "크루 등록", description = "크루 등록합니다. 최초 등록시 프로젝트도 함께 등록")
     public ResponseEntity<String> addCrew(@Valid @RequestBody CrewRequestDto crewRequestDto,
@@ -46,43 +119,61 @@ public class CrewController {
             return ResponseEntity.badRequest().body("요청 데이터가 올바르지 않습니다.");
         }
 
+        Logger logger = LoggerFactory.getLogger(CrewController.class);
+
+        logger.info("Received crewRequestDto: {}", crewRequestDto);
+
+
+        Long userNumber = 1L;
         //크루 등록
-        crewService.crewRegister(crewRequestDto.getCleanCrewDto());
+        crewRequestDto.getCleanCrewDto().setUserNumber(userNumber);
+        crewService.crewRegister(crewRequestDto);
         Long crewNumber = crewRequestDto.getCleanCrewDto().getCrewNumber();
         Long crewRecruitment = crewRequestDto.getCleanCrewDto().getCrewRecruitment();
-//        유저 넘버는 추후 세션
-        Long UserNumber = crewRequestDto.getCleanCrewDto().getUserNumber();
+        String projectTitle = crewRequestDto.getCleanCrewDto().getCrewName()+"의 첫 번째 크루 프로젝트에 참여해보세요!";
         String crewContent = crewRequestDto.getCleanCrewDto().getCrewContent();
-        Long crewRoleNumber = crewRequestDto.getCleanCrewDto().getCrewRoleNumber();
+        String crewTag1 = crewRequestDto.getCleanCrewDto().getCrewTag1();
+        String crewTag2 = crewRequestDto.getCleanCrewDto().getCrewTag2();
+        String crewTag3 = crewRequestDto.getCleanCrewDto().getCrewTag3();
+        String crewTag4 = crewRequestDto.getCleanCrewDto().getCrewTag4();
+
+
 
         // 크루 참여 (크루장으로 참여)
-        crewRequestDto.getCleanMyCrewDto().setCrewNumber(crewNumber);
-        crewRequestDto.getCleanMyCrewDto().setCrewRoleNumber(1L);
-//        추후 유저 세션
-        crewRequestDto.getCleanMyCrewDto().setUserNumber(UserNumber);
-        crewService.crewJoinRegister(crewRequestDto.getCleanMyCrewDto());
+        CleanMyCrewDto cleanMyCrewDto = new CleanMyCrewDto();
+        cleanMyCrewDto.setCrewNumber(crewNumber);
+        cleanMyCrewDto.setCrewRoleNumber(1L);
+        cleanMyCrewDto.setUserNumber(userNumber);
+        crewService.crewJoinRegister(cleanMyCrewDto);
 
         //크루 프로젝트 등록
-        crewRequestDto.getCleanCrewProjectDto().setCrewNumber(crewNumber);
-        crewRequestDto.getCleanCrewProjectDto().setProjectRecruitment(crewRecruitment);
+        crewRequestDto.getProjectRequestDto().getCleanCrewProjectDto().setCrewNumber(crewNumber);
+        crewRequestDto.getProjectRequestDto().getCleanCrewProjectDto().setProjectRecruitment(crewRecruitment);
 //        추후 세션에서 유저 넘버 등록
-        crewRequestDto.getCleanCrewProjectDto().setUserNumber(UserNumber);
-        crewRequestDto.getCleanCrewProjectDto().setProjectContent(crewContent);
+        crewRequestDto.getProjectRequestDto().getCleanCrewProjectDto().setUserNumber(userNumber);
+        crewRequestDto.getProjectRequestDto().getCleanCrewProjectDto().setProjectTitle(projectTitle);
+        crewRequestDto.getProjectRequestDto().getCleanCrewProjectDto().setProjectContent(crewContent);
 //        루트 선택 방식
-        crewProjectService.crewProjectRegister(crewRequestDto.getCleanCrewProjectDto());
-        Long crewProjectNumber = crewRequestDto.getCleanCrewProjectDto().getCrewProjectNumber();
-        Long crewProjectRoleNumber = crewRequestDto.getCleanCrewProjectDto().getProjectRoleNumber();
+//        태그 내용 입력
+        crewRequestDto.getProjectRequestDto().getCleanCrewProjectDto().setProjectTag1(crewTag1);
+        crewRequestDto.getProjectRequestDto().getCleanCrewProjectDto().setProjectTag2(crewTag2);
+        crewRequestDto.getProjectRequestDto().getCleanCrewProjectDto().setProjectTag3(crewTag3);
+        crewRequestDto.getProjectRequestDto().getCleanCrewProjectDto().setProjectTag4(crewTag4);
+        crewProjectService.crewProjectRegister(crewRequestDto.getProjectRequestDto());
+        Long crewProjectNumber = crewRequestDto.getProjectRequestDto().getCleanCrewProjectDto().getCrewProjectNumber();
         //        크루 프로젝트 참여
-        crewRequestDto.getCleanMyProjectDto().setCrewProjectNumber(crewProjectNumber);
-        crewRequestDto.getCleanMyProjectDto().setUserNumber(UserNumber);
-        crewRequestDto.getCleanMyProjectDto().setProjectRoleNumber(1L);
-        crewRequestDto.getCleanMyProjectDto().setCrewNumber(crewNumber);
-        crewProjectService.projectJoinRegister(crewRequestDto.getCleanMyProjectDto());
+        CleanMyProjectDto cleanMyProjectDto = new CleanMyProjectDto();
+        cleanMyProjectDto.setCrewProjectNumber(crewProjectNumber);
+        cleanMyProjectDto.setUserNumber(userNumber);
+        cleanMyProjectDto.setProjectRoleNumber(1L);
+        cleanMyProjectDto.setCrewNumber(crewNumber);
+        crewProjectService.projectJoinRegister(cleanMyProjectDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body("크루가 성공적으로 등록됐습니다!");
     }
 
-//    크루 디테일 화면 > 크루 참여하기
+
+//    크루 디테일 화면
 @GetMapping("/detail/{crewNumber}")
 @Operation(summary = "크루 상세 조회", description = "크루 상세 조회합니다.")
 public List<CrewDetailVo> crewDetail(@PathVariable Long crewNumber){
@@ -90,19 +181,43 @@ public List<CrewDetailVo> crewDetail(@PathVariable Long crewNumber){
 }
 
 // 크루원 참여하기
-    @PostMapping("/join/{crewNumber}")
+/*    @PostMapping("/join/{crewNumber}")
     @Operation(summary = "크루원 참여", description = "사용자가 크루에 참여합니다.")
-    public ResponseEntity<String> joinCrew(@PathVariable Long crewNumber){
+    public ResponseEntity<String> joinCrew(@PathVariable Long crewNumber,
+                                           @SessionAttribute("userNumber") Long userNumber){
 //        사용자 번호 (세션에서 가져오기)
-//        임시로 사용자 번호 1로 설정
-        Long userNumber = 1L;
         CleanMyCrewDto cleanMyCrewDto = new CleanMyCrewDto();
         cleanMyCrewDto.setCrewNumber(crewNumber);
         cleanMyCrewDto.setUserNumber(userNumber);
         cleanMyCrewDto.setCrewRoleNumber(2L);
         try {
             crewService.crewJoinRegister(cleanMyCrewDto);
-            return ResponseEntity.status(HttpStatus.CREATED).body("크루 참여가 성공적으로 완료되었습니다.");
+//            크루 참여가 성공하면 리다이렉트
+            return ResponseEntity.status(HttpStatus.SEE_OTHER)
+                    .header(HttpHeaders.LOCATION, "/crew-project/team/"+crewNumber)
+                    .build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("크루 참여에 실패했습니다.");
+        }
+    }*/
+
+    @PostMapping("/join/{crewNumber}")
+    @Operation(summary = "크루원 참여", description = "사용자가 크루에 참여합니다.")
+    public ResponseEntity<String> joinCrew(@PathVariable Long crewNumber){
+
+        Long userNumber = 1L;
+//        사용자 번호 (세션에서 가져오기)
+        CleanMyCrewDto cleanMyCrewDto = new CleanMyCrewDto();
+        cleanMyCrewDto.setCrewNumber(crewNumber);
+        cleanMyCrewDto.setUserNumber(userNumber);
+        cleanMyCrewDto.setCrewRoleNumber(2L);
+        try {
+            crewService.crewJoinRegister(cleanMyCrewDto);
+//            크루 참여가 성공하면 리다이렉트
+            return ResponseEntity.status(HttpStatus.SEE_OTHER)
+                    .header(HttpHeaders.LOCATION, "/crew-project/team/"+crewNumber)
+                    .build();
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("크루 참여에 실패했습니다.");

@@ -1,13 +1,13 @@
-package com.example.cleanway.domain.dto.user;
+package com.example.cleanway.domain.vo.mypage;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class UserDto {
+public class MyInfoVo {
     private Long userNumber;
     private String userEmail;
     private String userNickname;
-    private String profileImagePath;
+    private String newNickname;
 }

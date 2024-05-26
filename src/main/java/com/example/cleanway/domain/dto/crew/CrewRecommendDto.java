@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class CleanCrewRecommendDto {
-    private Long crewNumber;
+public class CrewRecommendDto {
+    private Long myProjectjoinNumber;
     private Long userNumber;
 }
