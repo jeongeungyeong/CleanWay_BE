@@ -2,9 +2,7 @@ package com.example.cleanway.controller.mypage;
 
 import com.example.cleanway.domain.dto.route.CleanRouteDto;
 import com.example.cleanway.domain.dto.user.UserDto;
-import com.example.cleanway.domain.vo.mypage.MyInfoVo;
-import com.example.cleanway.domain.vo.mypage.MyRouteVo;
-import com.example.cleanway.domain.vo.mypage.MySpotVo;
+import com.example.cleanway.domain.vo.mypage.*;
 import com.example.cleanway.service.mypage.MypageService;
 import com.example.cleanway.service.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,7 +26,7 @@ public class MypageController {
     final UserService userService;
 
 //    회원정보 가져오기
-    @GetMapping("/info")
+/*    @GetMapping("/info")
     public ResponseEntity<UserDto> getMemberInfo(HttpServletRequest req){
         // 사용자가 인증되었는지 확인합니다.
         HttpSession session = req.getSession(false); // 세션이 없으면 새로 만들지 않습니다.
@@ -54,11 +52,42 @@ public class MypageController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }*/
+
+    //    회원정보 가져오기
+    @GetMapping("/info")
+    public ResponseEntity<MyPloggingVo> getMemberInfo(HttpServletRequest req){
+        // 토큰에서 이메일 정보 가져오기
+        String userEmail = userService.getEmailFromToken(req);
+        System.out.println("클라이언트가 보내는 토큰: " + req.getHeader("Authorization"));
+        System.out.println("토큰에서 추출한 이메일: " + userEmail);
+
+        // 토큰 검증 및 유저 정보 가져오기
+        UserDto user = userService.findKakaoEmail(userEmail);
+
+        // 유저 정보가 null이 아닌 경우에만 처리
+        if (user != null) {
+            // 토큰에 포함된 유저 번호를 가져옵니다.
+            Long userNumber = user.getUserNumber();
+            System.out.println("유저 번호: " + userNumber);
+
+            // 유저 번호를 사용하여 회원 정보를 가져옵니다.
+            MyPloggingVo memberDetail = mypageService.findUser(userNumber);
+
+            // 회원 정보가 존재하는 경우에는 해당 정보를 반환하고, 없는 경우에는 404를 반환합니다.
+            if (memberDetail != null) {
+                return ResponseEntity.ok(memberDetail);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 
 
     // 닉네임 수정 엔드포인트
-    @PatchMapping("/info")
+  /*  @PatchMapping("/info")
     public ResponseEntity<Void> updateNickname(@RequestParam String newNickname, HttpServletRequest req) {
         // 사용자 인증 확인
         HttpSession session = req.getSession(false);
@@ -81,15 +110,41 @@ public class MypageController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
+    }*/
+
+    @PatchMapping("/info")
+    public ResponseEntity<Void> updateNickname(@RequestParam String newNickname,
+                                               HttpServletRequest req) {
+        // 토큰에서 이메일 정보 가져오기
+        String userEmail = userService.getEmailFromToken(req);
+        System.out.println("토큰에서 추출한 이메일: " + userEmail);
+
+        // 토큰 검증 및 유저 정보 가져오기
+        UserDto user = userService.findKakaoEmail(userEmail);
+
+
+        try {
+            // 사용자 번호 가져오기
+            Long userNumber = user.getUserNumber();
+
+            // 닉네임 업데이트를 위해 요청 객체 생성
+            MyInfoVo myInfoVo = new MyInfoVo();
+            myInfoVo.setUserNumber(userNumber);
+            myInfoVo.setNewNickname(newNickname);
+
+            // 닉네임 업데이트
+            mypageService.modifyNickname(myInfoVo);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
     }
 
 //    내 장소 보기
     @GetMapping("/myspot")
     @Operation(summary = "내 장소 리스트 조회", description = "저장한 제보 스팟을 조회합니다.")
     public List<MySpotVo> mySpotList (HttpServletRequest req){
-        // 세션에서 userNumber 가져오기
-        Long userNumber = (Long) req.getSession().getAttribute("userNumber");
-        System.out.println("세션 회원번호 확인 "+ userNumber);
+        Long userNumber = 1L;
         return mypageService.mySpotList(userNumber);
     }
 
@@ -97,11 +152,17 @@ public class MypageController {
 @GetMapping("/myroute")
 @Operation(summary = "내 루트 리스트 조회", description = "저장한 루트를 조회합니다.")
 public List<CleanRouteDto> myRouteList (HttpServletRequest req){
-    // 세션에서 userNumber 가져오기
-    Long userNumber = (Long) req.getSession().getAttribute("userNumber");
-    System.out.println("세션 회원번호 확인 "+ userNumber);
+    Long userNumber = 1L;
     return mypageService.myRouteList(userNumber);
 }
 
-// 참여한 플로깅
+// 참여한 플로깅 목록
+    @GetMapping("/myplogging")
+    @Operation(summary = "내 플로깅 리스트 조회", description = "참여한 플로깅 목록을 조회합니다.")
+    public List<MyProjectVo> myProjectList (HttpServletRequest req){
+        // 세션에서 userNumber 가져오기
+        Long userNumber = 1L;
+        return mypageService.myProjectList(userNumber);
+    }
+    
 }

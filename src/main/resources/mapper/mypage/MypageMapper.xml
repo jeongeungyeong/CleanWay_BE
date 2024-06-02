@@ -2,10 +2,13 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.cleanway.mapper.mypage.MypageMapper">
 <!--회원 정보 조회-->
-    <select id="selectUser" resultType="userDto">
-        SELECT USER_NUMBER, USER_EMAIL, USER_NICKNAME,PROFILE_IMAGE_PATH
-        FROM CLEAN_USER
-        WHERE USER_NUMBER =#{userNumber}
+    <select id="selectUser" resultType="myPloggingVo">
+            SELECT USER_NUMBER, USER_EMAIL, USER_NICKNAME,PROFILE_IMAGE_PATH,
+                   (select count(*)
+                    from CLEAN_MY_PROJECT CMP
+                    WHERE USER_NUMBER=#{userNumber})AS MY_PLOGGING
+            FROM CLEAN_USER
+            WHERE USER_NUMBER =#{userNumber}
     </select>
 
 
@@ -13,7 +16,7 @@
    <update id="updateNickname" parameterType="myInfoVo">
     update CLEAN_USER
     set USER_NICKNAME = #{newNickname}
-    where USER_NUMBER = #{userNumber};
+    where USER_NUMBER = #{userNumber}
    </update>
 
 
@@ -36,6 +39,37 @@
         from CLEAN_ROUTE
         where USER_NUMBER=#{userNumber}
     </select>
+
+    <!--    내 플로깅 목록 조회-->
+<!--    진행 예정 플로깅 목록 조회-->
+
+    <select id="selectMyProjectList" parameterType="long" resultType="myProjectVo">
+<![CDATA[
+        select CU.USER_NUMBER, CC.CREW_NUMBER,CC.CREW_NAME,
+        CMP.PROJECT_ROLE_NUMBER, CPR.PROJECT_ROLE_NAME,
+        CCP.PROJECT_TITLE,CCP.PROJECT_CONTENT,
+        CCP.CREW_PROJECT_NUMBER,
+        TO_CHAR(CMP.PROJECT_JOIN_DATE, 'YYYY/MM/DD') AS PROJECT_JOIN_DATE,
+        CCP.PROJECT_DATE,CCP.PROJECT_TIME,
+        CCP.PROJECT_SNAME,CCP.PROJECT_VNAME,CCP.PROJECT_DNAME,
+        CCP.PROJECT_RECRUITMENT,(
+        SELECT COUNT(*)
+        FROM CLEAN_MY_PROJECT
+        WHERE CREW_PROJECT_NUMBER = CCP.CREW_PROJECT_NUMBER
+        AND PROJECT_ROLE_NUMBER IN (1, 2)
+        ) AS PROJECT_MEMBER_COUNT,(CASE
+        WHEN CCP.PROJECT_DATE < sysdate THEN 'Y'
+        ELSE 'N'
+        END) AS IS_PAST_PROJECT
+        from CLEAN_MY_PROJECT CMP join CLEAN_USER CU on CMP.USER_NUMBER = CU.USER_NUMBER
+        JOIN CLEAN_CREW CC on CMP.CREW_NUMBER = CC.CREW_NUMBER
+        JOIN CLEAN_CREW_PROJECT CCP on CMP.CREW_PROJECT_NUMBER = CCP.CREW_PROJECT_NUMBER
+        JOIN CREW_PROJECT_ROLE CPR on CMP.PROJECT_ROLE_NUMBER = CPR.PROJECT_ROLE_NUMBER
+        WHERE CU.USER_NUMBER=1
+        ORDER BY CCP.PROJECT_DATE DESC
+        ]]>
+    </select>
+
 
 </mapper>
 

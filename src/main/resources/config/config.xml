@@ -28,12 +28,15 @@
 
 
       <typeAlias type="com.example.cleanway.domain.dto.user.UserDto" alias="userDto"/>
+      <typeAlias type="com.example.cleanway.domain.dto.user.AuthTokens" alias="authTokens"/>
 
       <typeAlias type="com.example.cleanway.domain.vo.report.ReportVo" alias="reportVo"/>
 
       <typeAlias type="com.example.cleanway.domain.vo.mypage.MySpotVo" alias="mySpotVo"/>
       <typeAlias type="com.example.cleanway.domain.vo.mypage.MyRouteVo" alias="myRouteVo"/>
       <typeAlias type="com.example.cleanway.domain.vo.mypage.MyInfoVo" alias="myInfoVo"/>
+      <typeAlias type="com.example.cleanway.domain.vo.mypage.MyProjectVo" alias="myProjectVo"/>
+      <typeAlias type="com.example.cleanway.domain.vo.mypage.MyPloggingVo" alias="myPloggingVo"/>
 
       <typeAlias type="com.example.cleanway.domain.vo.crew.CrewVo" alias="crewVo"/>
       <typeAlias type="com.example.cleanway.domain.vo.crew.CrewTeamVo" alias="crewTeamVo"/>
@@ -42,6 +45,8 @@
       <typeAlias type="com.example.cleanway.domain.vo.crew.CrewDetailVo" alias="crewDetailVo"/>
       <typeAlias type="com.example.cleanway.domain.vo.crew.CrewMemberVo" alias="crewMemberVo"/>
       <typeAlias type="com.example.cleanway.domain.vo.crew.ProjectMemberVo" alias="projectMemberVo"/>
+      <typeAlias type="com.example.cleanway.domain.vo.crew.CrewTop3Vo" alias="crewTop3Vo"/>
+      <typeAlias type="com.example.cleanway.domain.vo.crew.CrewRoomDetailVo" alias="crewRoomDetailVo"/>
 
 
       <typeAlias type="com.example.cleanway.domain.response.CrewSearchResponse" alias="crewSearchResponse"/>

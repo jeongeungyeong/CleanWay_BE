@@ -10,6 +10,6 @@ public class MySpotVo {
     private Long userNumber;
     private Long spotNumber;
     private Double spotLat;
-    private Double spotIng;
+    private Double spotLng;
     private String spotName;
 }

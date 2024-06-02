@@ -67,8 +67,11 @@ public class CrewService {
     public List<CrewDetailVo>  findCrewDetail(Long crewNumber){
         return crewMapper.selectCrewDetail(crewNumber);
     }
-
-//    크루 참여하기
+//    크루 첫 번째 프로젝트 번호 갖고 오기
+    public Long findCrewProjectNumber(Long crewNumber, String crewName) {
+        return crewMapper.getCrewProjectNumber(crewNumber, crewName);
+    }
+    //    크루 참여하기
     public void crewJoinRegister(CleanMyCrewDto cleanMyCrewDto){
 
         int count = crewMapper.selectMyCrewJoinCount(cleanMyCrewDto);

@@ -6,6 +6,7 @@ import com.example.cleanway.domain.dto.crew.CleanMyProjectDto;
 import com.example.cleanway.domain.dto.crew.CrewRecommendDto;
 import com.example.cleanway.domain.vo.crew.CrewMemberVo;
 import com.example.cleanway.domain.vo.crew.CrewTeamVo;
+import com.example.cleanway.domain.vo.crew.CrewTop3Vo;
 import com.example.cleanway.domain.vo.crew.ProjectMemberVo;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -28,10 +29,12 @@ String selectCrewName(Long crewNumber);
 
     // 특정 회원이 특정 크루에 참여했는지 검사 여부
     int selectProjectJoinCount (CleanMyProjectDto cleanMyProjectDto);
-    //프로젝트 회원 평가 삽입하기
 
-    //크루방 홈 리스트
+    //크루방 홈 리스트(예정 프로젝트)
     public List<CrewTeamVo> selectCrewProject(Long crewNumber);
+
+//    크루방 TOP3
+     public List<CrewTop3Vo> selectCrewTOP3(Long crewNumber);
 
     //    크루원 정보 조회
     public List<CrewMemberVo> selectCrewMemberByNum (Long crewNumber);
@@ -49,7 +52,7 @@ String selectCrewName(Long crewNumber);
 //    프로젝트 참여인원 정보 조회
     public List<ProjectMemberVo> selectProjectMemberByNum (Long crewNumber, Long crewProjectNumber);
 
-//    프로젝트 참가자들이 특정 회원을 추천했는지 여부 검사
+//    프로젝트 참가자들이 특정 프로젝트 인증 추천했는지 여부 검사
     int selectProjectRecommend(CrewRecommendDto crewRecommendDto);
 
 //    프로젝트 참가자들 인증 정보 삽입

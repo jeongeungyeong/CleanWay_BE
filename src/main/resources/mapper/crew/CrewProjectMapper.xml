@@ -4,13 +4,16 @@
 
 
 <!--    크루 프로젝트 리스트-->
+<!--    모집 중인 프로젝트 리스트-->
     <select id="selectCrewProject" resultType="crewTeamVo" parameterType="long">
         SELECT
-            CC.CREW_NAME,CMP.USER_NUMBER, CMP.CREW_PROJECT_NUMBER,
+            CC.CREW_NAME,CMP.USER_NUMBER,CU.PROFILE_IMAGE_PATH, CMP.CREW_PROJECT_NUMBER,
             CMP.PROJECT_ROLE_NUMBER,CMP.PROJECT_JOIN_DATE,CMP.CREW_NUMBER,
             CCP.PROJECT_WRITE_TIME,CCP.PROJECT_TITLE,CCP.PROJECT_CONTENT,
             CCP.PROJECT_RECRUITMENT,CCP.PROJECT_DATE,CCP.PROJECT_TIME,
-            CCP.PROJECT_SNAME,CCP.PROJECT_VNAME,CCP.PROJECT_DNAME,
+            CCP.PROJECT_SNAME,CCP.PROJECT_SLNG,CCP.PROJECT_SLAT,
+            CCP.PROJECT_VNAME,CCP.PROJECT_VLNG,CCP.PROJECT_VLAT,
+            CCP.PROJECT_DNAME,CCP.PROJECT_DLNG,CCP.PROJECT_DLAT,
             CPR.PROJECT_ROLE_NAME,CU.USER_NICKNAME,
             (
                 SELECT COUNT(*)
@@ -36,6 +39,28 @@
             CC.CREW_NUMBER = #{crewNumber} AND CMP.PROJECT_ROLE_NUMBER= 1
         ORDER BY
             CCP.PROJECT_WRITE_TIME DESC
+        ]]>
+    </select>
+
+
+<!--    크루원 TOP3-->
+    <select id="selectCrewTOP3" resultType="crewTop3Vo" parameterType="long">
+ <![CDATA[
+        SELECT RNUM,USER_NUMBER,USER_EMAIL,USER_NICKNAME,
+        PROFILE_IMAGE_PATH,
+        PROJECT_COUNT
+        FROM (SELECT CU.USER_NUMBER,CU.USER_EMAIL,
+        CU.USER_NICKNAME,CU.PROFILE_IMAGE_PATH,
+        COUNT(CMP.CREW_PROJECT_NUMBER) AS PROJECT_COUNT,
+        ROW_NUMBER() OVER (ORDER BY COUNT(CMP.CREW_PROJECT_NUMBER) DESC) AS RNUM
+        FROM CLEAN_MY_PROJECT CMP
+        JOIN CLEAN_CREW CC ON CMP.CREW_NUMBER = CC.CREW_NUMBER
+        JOIN CLEAN_USER CU ON CMP.USER_NUMBER = CU.USER_NUMBER
+        WHERE CC.CREW_NUMBER = #{crewNumber}
+        GROUP BY CU.USER_NUMBER, CU.USER_EMAIL, CU.USER_NICKNAME, CU.PROFILE_IMAGE_PATH
+        ) SUB
+       WHERE RNUM <= 3
+        ORDER BY RNUM
         ]]>
     </select>
 
@@ -67,6 +92,8 @@
         DELETE FROM CLEAN_MY_CREW
         WHERE USER_NUMBER = #{userNumber}
     </delete>
+
+    <!--    크루원 추가 모집-->
 
 <!--    크루 이름 가져오기-->
     <select id="selectCrewName" resultType="String" parameterType="long">
@@ -101,11 +128,13 @@
     <!--크루 프로젝트 상세 조회 -->
 <select id="selectProjectDetail" parameterType="long" resultType="crewTeamVo">
     SELECT
-        CC.CREW_NAME,CMP.USER_NUMBER, CMP.CREW_PROJECT_NUMBER,
+        CC.CREW_NAME,CMP.USER_NUMBER,CU.PROFILE_IMAGE_PATH, CMP.CREW_PROJECT_NUMBER,
         CMP.PROJECT_ROLE_NUMBER,CMP.PROJECT_JOIN_DATE,CMP.CREW_NUMBER,
         CCP.PROJECT_WRITE_TIME,CCP.PROJECT_TITLE,CCP.PROJECT_CONTENT,
         CCP.PROJECT_RECRUITMENT,CCP.PROJECT_DATE,CCP.PROJECT_TIME,
-        CCP.PROJECT_SNAME,CCP.PROJECT_VNAME,CCP.PROJECT_DNAME,
+        CCP.PROJECT_SNAME,CCP.PROJECT_SLNG,CCP.PROJECT_SLAT,
+        CCP.PROJECT_VNAME,CCP.PROJECT_VLNG,CCP.PROJECT_VLAT,
+        CCP.PROJECT_DNAME,CCP.PROJECT_DLNG,CCP.PROJECT_DLAT,
         CPR.PROJECT_ROLE_NAME,CU.USER_NICKNAME,
         (
             SELECT COUNT(*)
@@ -174,22 +203,25 @@
       WHERE CREW_PROJECT_NUMBER = #{crewProjectNumber} AND USER_NUMBER=#{userNumber}
     </select>
 
-<!--    프로젝트 회원 평가하기 -->
+<!--    크루 프로젝트 참여 번호 조회-->
+
+
+<!--    프로젝트 회원 인증하기 -->
     <select id="selectProjectRecommend" parameterType="crewRecommendDto">
         SELECT COUNT(MY_PROJECT_JOIN_NUMBER)
         FROM CREW_RECOMMEND
         WHERE MY_PROJECT_JOIN_NUMBER =#{myProjectjoinNumber} AND USER_NUMBER=#{userNumber}
     </select>
 
-<!--    프로젝트 회원 평가 삽입하기-->
+<!--    프로젝트 회원 인증 삽입하기-->
     <insert id="insertProjectRecommend" parameterType="crewRecommendDto">
         INSERT INTO CREW_RECOMMEND(MY_PROJECT_JOIN_NUMBER, USER_NUMBER)
         VALUES (#{myProjectjoinNumber},#{userNumber})
     </insert>
 
-<!--    평가 인증받은 회원 카운트하기 -->
 
-<!--    크루원 추가 모집-->
+
+
 
 
 

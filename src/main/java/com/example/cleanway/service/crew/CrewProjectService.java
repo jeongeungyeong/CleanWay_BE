@@ -6,6 +6,7 @@ import com.example.cleanway.domain.dto.crew.CrewRecommendDto;
 import com.example.cleanway.domain.dto.crew.ProjectRequestDto;
 import com.example.cleanway.domain.vo.crew.CrewMemberVo;
 import com.example.cleanway.domain.vo.crew.CrewTeamVo;
+import com.example.cleanway.domain.vo.crew.CrewTop3Vo;
 import com.example.cleanway.domain.vo.crew.ProjectMemberVo;
 import com.example.cleanway.mapper.crew.CrewProjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -21,9 +22,14 @@ import java.util.List;
 public class CrewProjectService {
     private final CrewProjectMapper crewProjectMapper;
 
-//    크루방 상세 조회
+//    크루방 상세 조회 (예정 프로젝트)
     public List<CrewTeamVo> findCrewProjectList(Long crewNumber){
         return crewProjectMapper.selectCrewProject(crewNumber);
+    }
+
+//    크루원 top3 조회
+    public List<CrewTop3Vo> findCrewTOP3List(Long crewNumber){
+        return crewProjectMapper.selectCrewTOP3(crewNumber);
     }
 
     // 크루원인지 확인하기
@@ -35,6 +41,8 @@ public class CrewProjectService {
     public CrewMemberVo findCrewLeader(Long crewNumber){
         return crewProjectMapper.selectCrewMemberByRole(crewNumber);
     }
+
+
     
 //     크루원 강퇴하기
     public void removeCrewMember(Long userNumber){
@@ -151,17 +159,24 @@ public String getCrewName(Long crewNumber) {
         crewProjectMapper.projectJoinInsert(cleanMyProjectDto);
     }
 
-//        크루 프로젝트 참여인원 조회
+//        크루 프로젝트 참여인원 상세조회
         public List<ProjectMemberVo> projectMemberList(Long crewNumber, Long crewProjectNumber){
             return crewProjectMapper.selectProjectMemberByNum(crewNumber,crewProjectNumber);
         }
 
-//        크루 프로젝트 참여인원 인증평가 삽입
+//        크루 프로젝트인원 여부 조회
+public boolean isCrewProjectMember(Long crewNumber, Long crewProjectNumber,Long userNumber) {
+    List<ProjectMemberVo> members = crewProjectMapper.selectProjectMemberByNum(crewNumber,crewProjectNumber);
+    return members.stream().anyMatch(member -> member.getUserNumber().equals(userNumber));
+}
+
+
+//        크루 프로젝트 참여인원 인증 삽입
     public void registerProjectRecommend(CrewRecommendDto crewRecommendDto){
         int count = crewProjectMapper.selectProjectRecommend(crewRecommendDto);
 
         if (count > 0){
-            throw new IllegalStateException("이미 평가한 프로젝트원입니다!");
+            throw new IllegalStateException("이미 인증한 프로젝트입니다!");
         }
         crewProjectMapper.insertProjectRecommend(crewRecommendDto);
     }

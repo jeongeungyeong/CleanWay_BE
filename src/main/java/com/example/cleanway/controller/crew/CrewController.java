@@ -9,6 +9,7 @@ import com.example.cleanway.domain.vo.crew.CrewVo;
 import com.example.cleanway.service.crew.CrewProjectService;
 import com.example.cleanway.service.crew.CrewService;
 import com.example.cleanway.service.mypage.MypageService;
+import com.example.cleanway.service.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -34,6 +35,7 @@ public class CrewController {
     private final CrewService crewService;
     private final CrewProjectService crewProjectService;
     private final MypageService mypageService;
+    private final UserService userService;
 
     //    크루 홈 리스트
     @GetMapping("/list")
@@ -57,7 +59,7 @@ public class CrewController {
     @Operation(summary = "크루 등록", description = "크루 등록합니다. 최초 등록시 프로젝트도 함께 등록")
     public ResponseEntity<String> addCrew(@Valid @RequestBody CrewRequestDto crewRequestDto,
                                           BindingResult bindingResult,
-                                          @SessionAttribute("userNumber") Long userNumber){
+                                          HttpServletRequest req){
         if (bindingResult.hasErrors()) {
             return ResponseEntity.badRequest().body("요청 데이터가 올바르지 않습니다.");
         }
@@ -65,6 +67,14 @@ public class CrewController {
         Logger logger = LoggerFactory.getLogger(CrewController.class);
 
         logger.info("Received crewRequestDto: {}", crewRequestDto);
+        // 토큰에서 이메일 정보 가져오기
+        String userEmail = userService.getEmailFromToken(req);
+        System.out.println("토큰에서 추출한 이메일: " + userEmail);
+
+        // 토큰 검증 및 유저 정보 가져오기
+        UserDto user = userService.findKakaoEmail(userEmail);
+        // 사용자 번호 가져오기
+            Long userNumber = user.getUserNumber();
 
         //크루 등록
         crewRequestDto.getCleanCrewDto().setUserNumber(userNumber);
@@ -138,7 +148,6 @@ public class CrewController {
         String crewTag4 = crewRequestDto.getCleanCrewDto().getCrewTag4();
 
 
-
         // 크루 참여 (크루장으로 참여)
         CleanMyCrewDto cleanMyCrewDto = new CleanMyCrewDto();
         cleanMyCrewDto.setCrewNumber(crewNumber);
@@ -184,8 +193,16 @@ public List<CrewDetailVo> crewDetail(@PathVariable Long crewNumber){
 /*    @PostMapping("/join/{crewNumber}")
     @Operation(summary = "크루원 참여", description = "사용자가 크루에 참여합니다.")
     public ResponseEntity<String> joinCrew(@PathVariable Long crewNumber,
-                                           @SessionAttribute("userNumber") Long userNumber){
-//        사용자 번호 (세션에서 가져오기)
+                                           HttpServletRequest req){
+// 토큰에서 이메일 정보 가져오기
+        String userEmail = userService.getEmailFromToken(req);
+        System.out.println("토큰에서 추출한 이메일: " + userEmail);
+
+        // 토큰 검증 및 유저 정보 가져오기
+        UserDto user = userService.findKakaoEmail(userEmail);
+        // 사용자 번호 가져오기
+            Long userNumber = user.getUserNumber();
+
         CleanMyCrewDto cleanMyCrewDto = new CleanMyCrewDto();
         cleanMyCrewDto.setCrewNumber(crewNumber);
         cleanMyCrewDto.setUserNumber(userNumber);
@@ -207,13 +224,35 @@ public List<CrewDetailVo> crewDetail(@PathVariable Long crewNumber){
     public ResponseEntity<String> joinCrew(@PathVariable Long crewNumber){
 
         Long userNumber = 1L;
+
+//        크루 이름 가져오기
+        String crewName = crewProjectService.getCrewName(crewNumber);
+        if (crewName == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("크루를 찾을 수 없습니다.");
+        }
+
+//        크루 프로젝트 번호 갖고 오기
+        Long crewProjectNumber = crewService.findCrewProjectNumber(crewNumber, crewName);
+        if (crewProjectNumber == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("크루 첫 번째 프로젝트를 찾을 수 없습니다.");
+        }
+
 //        사용자 번호 (세션에서 가져오기)
+//        크루 참여
         CleanMyCrewDto cleanMyCrewDto = new CleanMyCrewDto();
         cleanMyCrewDto.setCrewNumber(crewNumber);
         cleanMyCrewDto.setUserNumber(userNumber);
         cleanMyCrewDto.setCrewRoleNumber(2L);
+// 크루 프로젝트 참여
+        CleanMyProjectDto cleanMyProjectDto = new CleanMyProjectDto();
+        cleanMyProjectDto.setCrewProjectNumber(crewProjectNumber);
+        cleanMyProjectDto.setUserNumber(userNumber);
+        cleanMyProjectDto.setProjectRoleNumber(2L);
+        cleanMyProjectDto.setCrewNumber(crewNumber);
+
         try {
             crewService.crewJoinRegister(cleanMyCrewDto);
+            crewProjectService.projectJoinRegister(cleanMyProjectDto);
 //            크루 참여가 성공하면 리다이렉트
             return ResponseEntity.status(HttpStatus.SEE_OTHER)
                     .header(HttpHeaders.LOCATION, "/crew-project/team/"+crewNumber)

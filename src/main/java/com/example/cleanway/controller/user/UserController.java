@@ -51,7 +51,6 @@ public class UserController {
     @GetMapping("/callback")
     public ResponseEntity<String> kakaoCallback(@RequestParam("code") String code,
                                                 HttpSession session){
-
         // SETP1 : 인가코드 받기
         // (카카오 인증 서버는 서비스 서버의 Redirect URI로 인가 코드를 전달합니다.)
         System.out.println("코드  " +code);
@@ -73,11 +72,16 @@ public class UserController {
             throw new RuntimeException(e);
         }
         System.out.println("이메일 확인 "+kakaoInfo.getEmail());
+/*        System.out.println("카카오id 확인 "+kakaoInfo.getId());*/
 
         // STEP4: 카카오 사용자 정보 확인
         UserDto kakaoMember = oAuthService.ifNeedKakaoInfo(kakaoInfo);
 
-        // STEP5: 강제 로그인
+        // STEP5: 사용자 토큰 제공
+        String token = oAuthService.login(kakaoMember.getUserEmail());
+        System.out.println("서버 제공 토큰 "+token);
+
+        // STEP6: 강제 로그인
         // 세션에 회원 정보 저장 & 세션 유지 시간 설정
         if (kakaoMember != null) {
             session.setAttribute("loginMember", kakaoMember);
@@ -96,6 +100,15 @@ public class UserController {
                 .header(HttpHeaders.LOCATION, "/mypage/info")
                 .build();
     }
+
+    //    프론트에서 유저 정보 받아서 로그인(+회원가입)
+   @PostMapping("/login")
+   public ResponseEntity<?> kakaoLogin(@RequestBody KakaoInfo kakaoInfo){
+        UserDto user = oAuthService.ifNeedKakaoInfo(kakaoInfo);
+        String token = oAuthService.login(user.getUserEmail());
+        System.out.println("토큰 번호 확인: " + token);
+        return ResponseEntity.ok(token);
+   }
 
     @GetMapping("member/logout")
     public String kakaoLogout(HttpSession session, HttpServletResponse response) {

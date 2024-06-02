@@ -83,6 +83,15 @@
         ]]>
     </select>
 
+<!--    크루 첫 번째 프로젝트 번호 조회하기-->
+    <select id="getCrewProjectNumber" resultType="Long">
+        SELECT CREW_PROJECT_NUMBER
+        FROM CLEAN_CREW_PROJECT CCP
+                 JOIN CLEAN_CREW CC ON CCP.CREW_NUMBER = CC.CREW_NUMBER
+        WHERE CC.CREW_NUMBER = #{crewNumber}
+          AND CCP.PROJECT_TITLE = #{crewName} || '의 첫 번째 크루 프로젝트에 참여해보세요!'
+    </select>
+
     <!--크루 참여-->
     <insert id="crewJoinInsert" parameterType="cleanMyCrewDto">
         INSERT INTO CLEAN_MY_CREW(CREW_NUMBER, USER_NUMBER, CREW_ROLE_NUMBER,CREW_JOIN_DATE)
@@ -149,7 +158,6 @@
             )
         ]]>
     </select>
-
 
     <!--    크루 참여 인원 알아보기-->
     <select id="countCrewMembers" resultType="_int">

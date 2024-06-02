@@ -7,7 +7,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class KakaoInfo {
-    private String nickname;
-    private String email;
+public class LoginResponse {
+    private String userEmail;
+    private String kakaoNickname;
+    private String profileImagePath;
+    private String token;
 }

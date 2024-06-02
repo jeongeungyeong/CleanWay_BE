@@ -1,7 +1,12 @@
 package com.example.cleanway.service.user;
 
+
+import com.example.cleanway.config.AuthTokensGenerator;
+import com.example.cleanway.config.JwtTokenProvider;
+import com.example.cleanway.domain.dto.user.AuthTokens;
 import com.example.cleanway.domain.dto.user.UserDto;
 import com.example.cleanway.domain.response.kakao.KakaoInfo;
+import com.example.cleanway.domain.response.kakao.LoginResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -17,6 +22,8 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
+import java.util.Date;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -28,6 +35,8 @@ public class OAuthService {
     private String redirectUri;
 
     private final UserService userService;
+    private final AuthTokensGenerator authTokensGenerator;
+    private final JwtTokenProvider  jwtTokenProvider;
 
 //    토큰 받기
     public String getAccessToken(String code) throws JsonProcessingException{
@@ -40,6 +49,10 @@ public class OAuthService {
         body.add("client_id", clientId);
         body.add("redirect_uri", redirectUri);
         body.add("code", code);
+
+
+        // (필요 시) 클라이언트 시크릿 추가
+         body.add("client_secret", "tC8yy4QrF34Lz2d0PY9BXSWqfl83Cx8s");
 
         // HTTP 요청 보내기
         HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest = new HttpEntity<>(body, headers);
@@ -81,14 +94,16 @@ public KakaoInfo getKakaoInfo(String accessToken) throws JsonProcessingException
     ObjectMapper objectMapper = new ObjectMapper();
     JsonNode jsonNode = objectMapper.readTree(responseBody);
 
-    Long id = jsonNode.get("id").asLong();
+/*    Long id = jsonNode.get("id").asLong();*/
     String email = jsonNode.get("kakao_account").get("email").asText();
     String nickname = jsonNode.get("properties")
             .get("nickname").asText();
 
-    return new KakaoInfo(id, nickname, email);
+/*    return new KakaoInfo(id, nickname, email);*/
+    return new KakaoInfo(nickname, email);
 }
-// 카카오 사용자 정보 확인
+
+// 카카오 사용자 정보 확인 및 회원가입
 public UserDto ifNeedKakaoInfo (KakaoInfo kakaoInfo) {
     // DB에 중복되는 email이 있는지 확인
     String userEmail = kakaoInfo.getEmail();
@@ -112,9 +127,22 @@ public UserDto ifNeedKakaoInfo (KakaoInfo kakaoInfo) {
         // DB 재조회
         kakaoMember = userService.findKakaoEmail(userEmail);
     }
-
     return kakaoMember;
 }
+
+// 강제 로그인 및 토큰 발급
+public String login(String userEmail){
+//        토큰 만료 시간 설정 (1시간)
+    long now = (new Date()).getTime();
+    Date expiryDate = new Date(now+1000*60*60);
+
+//    토큰 생성
+    return jwtTokenProvider.accessTokenGenerate(userEmail,expiryDate);
+}
+
+
+
+// 카카오 전체 로그아웃
     public void kakaoDisconnect(String accessToken) throws JsonProcessingException {
         // HTTP Header 생성
         HttpHeaders headers = new HttpHeaders();
