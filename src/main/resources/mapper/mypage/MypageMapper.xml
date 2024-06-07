@@ -18,11 +18,16 @@
     set USER_NICKNAME = #{newNickname}
     where USER_NUMBER = #{userNumber}
    </update>
+<!--    <update id="updateNickname" parameterType="userDto">
+    update CLEAN_USER
+    set USER_NICKNAME = #{UserNickname}
+    where USER_NUMBER = #{userNumber}
+</update>-->
 
 
     <!--내 장소 보기-->
     <select id="selectMySpot" parameterType="long" resultType="mySpotVo">
-        select CS.USER_NUMBER, CS.SPOT_NUMBER,
+        select DISTINCT CS.USER_NUMBER, CS.SPOT_NUMBER,
                CRS.REPORT_NUMBER,CRS.SPOT_LAT,CRS.SPOT_LNG,SPOT_NAME
         from CLEAN_SPOT CS JOIN CLEAN_REPORT_SPOT CRS on CS.SPOT_NUMBER = CRS.SPOT_NUMBER
         where USER_NUMBER=#{userNumber}
@@ -70,6 +75,10 @@
         ]]>
     </select>
 
+<!--    회원 탈퇴-->
+<delete id="deleteUserbyEmail">
+
+</delete>
 
 </mapper>
 

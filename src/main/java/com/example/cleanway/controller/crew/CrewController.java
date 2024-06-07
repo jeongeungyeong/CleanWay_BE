@@ -3,6 +3,7 @@ package com.example.cleanway.controller.crew;
 import com.example.cleanway.domain.dto.crew.CleanMyCrewDto;
 import com.example.cleanway.domain.dto.crew.CleanMyProjectDto;
 import com.example.cleanway.domain.dto.crew.CrewRequestDto;
+import com.example.cleanway.domain.dto.user.UserDto;
 import com.example.cleanway.domain.response.CrewSearchResponse;
 import com.example.cleanway.domain.vo.crew.CrewDetailVo;
 import com.example.cleanway.domain.vo.crew.CrewVo;
@@ -12,6 +13,7 @@ import com.example.cleanway.service.mypage.MypageService;
 import com.example.cleanway.service.user.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -54,7 +56,7 @@ public class CrewController {
         return ResponseEntity.ok(response);
     }
 
-/*// 크루 등록
+// 크루 등록
     @PostMapping("/add")
     @Operation(summary = "크루 등록", description = "크루 등록합니다. 최초 등록시 프로젝트도 함께 등록")
     public ResponseEntity<String> addCrew(@Valid @RequestBody CrewRequestDto crewRequestDto,
@@ -118,10 +120,10 @@ public class CrewController {
         crewProjectService.projectJoinRegister(cleanMyProjectDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body("크루가 성공적으로 등록됐습니다!");
-    }*/
+    }
 
     // 크루 등록
-    @PostMapping("/add")
+/*    @PostMapping("/add")
     @Operation(summary = "크루 등록", description = "크루 등록합니다. 최초 등록시 프로젝트도 함께 등록")
     public ResponseEntity<String> addCrew(@Valid @RequestBody CrewRequestDto crewRequestDto,
                                           BindingResult bindingResult){
@@ -179,7 +181,7 @@ public class CrewController {
         crewProjectService.projectJoinRegister(cleanMyProjectDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body("크루가 성공적으로 등록됐습니다!");
-    }
+    }*/
 
 
 //    크루 디테일 화면
@@ -190,7 +192,7 @@ public List<CrewDetailVo> crewDetail(@PathVariable Long crewNumber){
 }
 
 // 크루원 참여하기
-/*    @PostMapping("/join/{crewNumber}")
+    @PostMapping("/join/{crewNumber}")
     @Operation(summary = "크루원 참여", description = "사용자가 크루에 참여합니다.")
     public ResponseEntity<String> joinCrew(@PathVariable Long crewNumber,
                                            HttpServletRequest req){
@@ -203,12 +205,33 @@ public List<CrewDetailVo> crewDetail(@PathVariable Long crewNumber){
         // 사용자 번호 가져오기
             Long userNumber = user.getUserNumber();
 
+        //        크루 이름 가져오기
+        String crewName = crewProjectService.getCrewName(crewNumber);
+        if (crewName == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("크루를 찾을 수 없습니다.");
+        }
+
+//        크루 프로젝트 번호 갖고 오기
+        Long crewProjectNumber = crewService.findCrewProjectNumber(crewNumber, crewName);
+        if (crewProjectNumber == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("크루 첫 번째 프로젝트를 찾을 수 없습니다.");
+        }
+
+        //        크루 참여
         CleanMyCrewDto cleanMyCrewDto = new CleanMyCrewDto();
         cleanMyCrewDto.setCrewNumber(crewNumber);
         cleanMyCrewDto.setUserNumber(userNumber);
         cleanMyCrewDto.setCrewRoleNumber(2L);
+        // 크루 프로젝트 참여
+        CleanMyProjectDto cleanMyProjectDto = new CleanMyProjectDto();
+        cleanMyProjectDto.setCrewProjectNumber(crewProjectNumber);
+        cleanMyProjectDto.setUserNumber(userNumber);
+        cleanMyProjectDto.setProjectRoleNumber(2L);
+        cleanMyProjectDto.setCrewNumber(crewNumber);
+
         try {
             crewService.crewJoinRegister(cleanMyCrewDto);
+            crewProjectService.projectJoinRegister(cleanMyProjectDto);
 //            크루 참여가 성공하면 리다이렉트
             return ResponseEntity.status(HttpStatus.SEE_OTHER)
                     .header(HttpHeaders.LOCATION, "/crew-project/team/"+crewNumber)
@@ -217,9 +240,9 @@ public List<CrewDetailVo> crewDetail(@PathVariable Long crewNumber){
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("크루 참여에 실패했습니다.");
         }
-    }*/
+    }
 
-    @PostMapping("/join/{crewNumber}")
+/*    @PostMapping("/join/{crewNumber}")
     @Operation(summary = "크루원 참여", description = "사용자가 크루에 참여합니다.")
     public ResponseEntity<String> joinCrew(@PathVariable Long crewNumber){
 
@@ -261,6 +284,6 @@ public List<CrewDetailVo> crewDetail(@PathVariable Long crewNumber){
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("크루 참여에 실패했습니다.");
         }
-    }
+    }*/
 
 }

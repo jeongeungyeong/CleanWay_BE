@@ -121,7 +121,7 @@ public class ReportController {
     }
 
 //    제보 장소 즐겨찾기
-@PostMapping("/saveSpot/{spotNumber}")
+/*@PostMapping("/saveSpot/{spotNumber}")
     @Operation(summary = "제보 장소 저장", description = "제보된 장소를 내 장소에 저장합니다.")
     public ResponseEntity<String> saveSpot(@PathVariable Long spotNumber){
 
@@ -136,11 +136,11 @@ public class ReportController {
         e.printStackTrace();
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("내 장소에 저장을 실패했습니다.");
     }
-}
+}*/
 
 //토큰 활용
 //    제보 장소 즐겨찾기
-/*@PostMapping("/saveSpot/{spotNumber}")
+@PostMapping("/saveSpot/{spotNumber}")
 @Operation(summary = "제보 장소 저장", description = "제보된 장소를 내 장소에 저장합니다.")
 public ResponseEntity<String> saveSpot(@PathVariable Long spotNumber,
                                        HttpServletRequest req){
@@ -164,6 +164,6 @@ public ResponseEntity<String> saveSpot(@PathVariable Long spotNumber,
         e.printStackTrace();
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("내 장소에 저장을 실패했습니다.");
     }
-}*/
+}
 
 }

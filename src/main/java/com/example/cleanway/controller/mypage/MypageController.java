@@ -113,7 +113,7 @@ public class MypageController {
     }*/
 
     @PatchMapping("/info")
-    public ResponseEntity<Void> updateNickname(@RequestParam String newNickname,
+    public ResponseEntity<String> updateNickname(@RequestParam String newNickname,
                                                HttpServletRequest req) {
         // 토큰에서 이메일 정보 가져오기
         String userEmail = userService.getEmailFromToken(req);
@@ -126,27 +126,49 @@ public class MypageController {
         try {
             // 사용자 번호 가져오기
             Long userNumber = user.getUserNumber();
+            String userNickName = user.getUserNickname();
 
             // 닉네임 업데이트를 위해 요청 객체 생성
             MyInfoVo myInfoVo = new MyInfoVo();
             myInfoVo.setUserNumber(userNumber);
+            myInfoVo.setUserNickname(userNickName);
             myInfoVo.setNewNickname(newNickname);
 
             // 닉네임 업데이트
             mypageService.modifyNickname(myInfoVo);
-            return ResponseEntity.ok().build();
+
+            // 성공 메시지 반환
+            return ResponseEntity.ok("닉네임이 성공적으로 변경되었습니다.");
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("닉네임 변경 중 오류가 발생했습니다.");
         }
     }
 
 //    내 장소 보기
-    @GetMapping("/myspot")
+/*    @GetMapping("/myspot")
     @Operation(summary = "내 장소 리스트 조회", description = "저장한 제보 스팟을 조회합니다.")
     public List<MySpotVo> mySpotList (HttpServletRequest req){
         Long userNumber = 1L;
         return mypageService.mySpotList(userNumber);
-    }
+    }*/
+
+//    토큰 내 장소 보기
+@GetMapping("/myspot")
+@Operation(summary = "내 장소 리스트 조회", description = "저장한 제보 스팟을 조회합니다.")
+public List<MySpotVo> mySpotList (HttpServletRequest req){
+    // 토큰에서 이메일 정보 가져오기
+    String userEmail = userService.getEmailFromToken(req);
+    System.out.println("토큰에서 추출한 이메일: " + userEmail);
+
+    // 토큰 검증 및 유저 정보 가져오기
+    UserDto user = userService.findKakaoEmail(userEmail);
+
+    // 사용자 번호 가져오기
+    Long userNumber = user.getUserNumber();
+
+    return mypageService.mySpotList(userNumber);
+}
 
     //    내 루트 보기
 @GetMapping("/myroute")
@@ -157,12 +179,30 @@ public List<CleanRouteDto> myRouteList (HttpServletRequest req){
 }
 
 // 참여한 플로깅 목록
-    @GetMapping("/myplogging")
+/*    @GetMapping("/myplogging")
     @Operation(summary = "내 플로깅 리스트 조회", description = "참여한 플로깅 목록을 조회합니다.")
     public List<MyProjectVo> myProjectList (HttpServletRequest req){
         // 세션에서 userNumber 가져오기
         Long userNumber = 1L;
         return mypageService.myProjectList(userNumber);
-    }
+    }*/
+
+//    토큰 참여한 플로깅 목록
+@GetMapping("/myplogging")
+@Operation(summary = "내 플로깅 리스트 조회", description = "참여한 플로깅 목록을 조회합니다.")
+public List<MyProjectVo> myProjectList (HttpServletRequest req){
+    // 토큰에서 이메일 정보 가져오기
+    String userEmail = userService.getEmailFromToken(req);
+    System.out.println("토큰에서 추출한 이메일: " + userEmail);
+
+    // 토큰 검증 및 유저 정보 가져오기
+    UserDto user = userService.findKakaoEmail(userEmail);
+
+    // 사용자 번호 가져오기
+    Long userNumber = user.getUserNumber();
+
+    return mypageService.myProjectList(userNumber);
+}
+
     
 }

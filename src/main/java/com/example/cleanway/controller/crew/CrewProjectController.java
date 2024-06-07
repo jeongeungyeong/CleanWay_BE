@@ -97,7 +97,7 @@ public class CrewProjectController {
         }
     }
 
-/*//    크루 프로젝트 등록
+//    크루 프로젝트 등록
     @PostMapping("/{crewNumber}/add")
     @Operation(summary = "크루 프로젝트 등록", description = "크루 프로젝트 등록합니다.")
     public ResponseEntity<String> makeProject(@PathVariable Long crewNumber,
@@ -128,10 +128,10 @@ public class CrewProjectController {
         crewProjectService.projectJoinRegister(cleanMyProjectDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body("프로젝트가 성공적으로 등록되었습니다!");
-    }*/
+    }
 
     //    크루 프로젝트 등록
-    @PostMapping("/{crewNumber}/add")
+    /*@PostMapping("/{crewNumber}/add")
     @Operation(summary = "크루 프로젝트 등록", description = "크루 프로젝트 등록합니다.")
     public ResponseEntity<String> makeProject(@PathVariable Long crewNumber,
                                               @Valid @RequestBody ProjectRequestDto projectRequestDto,
@@ -164,7 +164,7 @@ public class CrewProjectController {
         crewProjectService.projectJoinRegister(cleanMyProjectDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body("프로젝트가 성공적으로 등록되었습니다!");
-    }
+    }*/
 
 //    크루 프로젝트 상세보기
     @GetMapping("/detail/{crewNumber}/{crewProjectNumber}")
@@ -213,7 +213,7 @@ public class CrewProjectController {
 
 
 
-/*//    크루 프로젝트 참여하기
+//    크루 프로젝트 참여하기
     @PostMapping("/join/{crewNumber}/{crewProjectNumber}")
     @Operation(summary = "크루 프로젝트원 참여", description = "사용자가 크루 프로젝트에 참여합니다.")
     public ResponseEntity<String> joinProject (@PathVariable Long crewNumber,
@@ -243,11 +243,11 @@ public class CrewProjectController {
             e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("크루 프로젝트 참여에 실패했습니다.");
         }
-    }*/
+    }
 
 
 //    크루 프로젝트 참여하기
-@PostMapping("/join/{crewNumber}/{crewProjectNumber}")
+/*@PostMapping("/join/{crewNumber}/{crewProjectNumber}")
 @Operation(summary = "크루 프로젝트원 참여", description = "사용자가 크루 프로젝트에 참여합니다.")
 public ResponseEntity<String> joinProject (@PathVariable Long crewNumber,
                                            @PathVariable Long crewProjectNumber)
@@ -277,7 +277,7 @@ public ResponseEntity<String> joinProject (@PathVariable Long crewNumber,
         e.printStackTrace();
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("크루 프로젝트 참여에 실패했습니다.");
     }
-}
+}*/
 
 
 
@@ -298,7 +298,7 @@ public List<ProjectMemberVo> projectMemberList(@PathVariable Long crewNumber,
 //    프로젝트장 - 프로젝트 삭제
 //    프로젝트원 - 프로젝트 삭제
 
-/*    //    내 크루 목록 보기
+    //    내 크루 목록 보기
     @GetMapping("/mycrew")
     @Operation(summary = "내 크루 리스트 조회", description = "참여한 크루 목록을 조회합니다.")
     public List<MyCrewVo> myCrewList(HttpServletRequest req){
@@ -312,9 +312,9 @@ public List<ProjectMemberVo> projectMemberList(@PathVariable Long crewNumber,
             Long userNumber = user.getUserNumber();
         System.out.println(userNumber);
         return crewService.myCrewList(userNumber);
-    }*/
+    }
 
-    //    내 크루 목록 보기
+  /*  //    내 크루 목록 보기
     @GetMapping("/mycrew")
     @Operation(summary = "내 크루 리스트 조회", description = "참여한 크루 목록을 조회합니다.")
     public List<MyCrewVo> myCrewList(){
@@ -322,9 +322,9 @@ public List<ProjectMemberVo> projectMemberList(@PathVariable Long crewNumber,
         Long userNumber = 1L;
         System.out.println(userNumber);
         return crewService.myCrewList(userNumber);
-    }
+    }*/
 
-/*//    내 크루 목록 검색어 조회
+//    내 크루 목록 검색어 조회
   @GetMapping("/mycrew/search")
    @Operation(summary = "내 크루 검색어 조회", description = "가입된 내 크루를 검색을 통해 조회합니다.")
   public ResponseEntity<MyCrewSearchResponse> searchCrewByWord(@RequestParam("searchWord") String searchWord,
@@ -343,10 +343,10 @@ public List<ProjectMemberVo> projectMemberList(@PathVariable Long crewNumber,
     MyCrewSearchResponse response = new MyCrewSearchResponse(myCrewByWordList, searchWord);
 
     return ResponseEntity.ok(response);
-}*/
+}
 
     //    내 크루 목록 검색어 조회
-    @GetMapping("/mycrew/search")
+/*    @GetMapping("/mycrew/search")
     @Operation(summary = "내 크루 검색어 조회", description = "가입된 내 크루를 검색을 통해 조회합니다.")
     public ResponseEntity<MyCrewSearchResponse> searchCrewByWord(@RequestParam("searchWord") String searchWord) {
         Long userNumber = 1L;
@@ -355,7 +355,7 @@ public List<ProjectMemberVo> projectMemberList(@PathVariable Long crewNumber,
         MyCrewSearchResponse response = new MyCrewSearchResponse(myCrewByWordList, searchWord);
 
         return ResponseEntity.ok(response);
-    }
+    }*/
 
     //    크루원 - 크루탈퇴
 }
