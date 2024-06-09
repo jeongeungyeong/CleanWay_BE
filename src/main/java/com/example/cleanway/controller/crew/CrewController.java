@@ -83,6 +83,7 @@ public class CrewController {
         crewService.crewRegister(crewRequestDto);
         Long crewNumber = crewRequestDto.getCleanCrewDto().getCrewNumber();
         Long crewRecruitment = crewRequestDto.getCleanCrewDto().getCrewRecruitment();
+        String projectTitle = crewRequestDto.getCleanCrewDto().getCrewName()+"의 첫 번째 크루 프로젝트에 참여해보세요!";
         String crewContent = crewRequestDto.getCleanCrewDto().getCrewContent();
         String crewTag1 = crewRequestDto.getCleanCrewDto().getCrewTag1();
         String crewTag2 = crewRequestDto.getCleanCrewDto().getCrewTag2();
@@ -100,8 +101,8 @@ public class CrewController {
         //크루 프로젝트 등록
         crewRequestDto.getProjectRequestDto().getCleanCrewProjectDto().setCrewNumber(crewNumber);
         crewRequestDto.getProjectRequestDto().getCleanCrewProjectDto().setProjectRecruitment(crewRecruitment);
-//        추후 세션에서 유저 넘버 등록
         crewRequestDto.getProjectRequestDto().getCleanCrewProjectDto().setUserNumber(userNumber);
+        crewRequestDto.getProjectRequestDto().getCleanCrewProjectDto().setProjectTitle(projectTitle);
         crewRequestDto.getProjectRequestDto().getCleanCrewProjectDto().setProjectContent(crewContent);
 //        루트 선택 방식
 //        태그 내용 입력

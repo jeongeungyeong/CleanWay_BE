@@ -132,9 +132,9 @@ public UserDto ifNeedKakaoInfo (KakaoInfo kakaoInfo) {
 
 // 강제 로그인 및 토큰 발급
 public String login(String userEmail){
-//        토큰 만료 시간 설정 (1시간)
+// 토큰 만료 시간 설정 (5시간)
     long now = (new Date()).getTime();
-    Date expiryDate = new Date(now+1000*60*60);
+    Date expiryDate = new Date(now+1000*60*60*5);
 
 //    토큰 생성
     return jwtTokenProvider.accessTokenGenerate(userEmail,expiryDate);

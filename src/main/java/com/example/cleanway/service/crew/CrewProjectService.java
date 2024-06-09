@@ -57,7 +57,7 @@ public String getCrewName(Long crewNumber) {
 }
 
     //크루 프로젝트 등록
-    public void crewProjectRegister(ProjectRequestDto projectRequestDto){
+  /*  public void crewProjectRegister(ProjectRequestDto projectRequestDto){
         CleanCrewProjectDto cleanCrewProjectDto = projectRequestDto.getCleanCrewProjectDto();
 
         List<Double> projectVLng = projectRequestDto.getProjectVLng();
@@ -69,7 +69,7 @@ public String getCrewName(Long crewNumber) {
             if (projectVLng.size() > 0) cleanCrewProjectDto.setProjectVLng(projectVLng.get(0));
             if (projectVLat.size() > 0) cleanCrewProjectDto.setProjectVLat(projectVLat.get(0));
             if (projectVName.size() > 0) cleanCrewProjectDto.setProjectVName(projectVName.get(0));
-            if(projectTagList.size()>0) cleanCrewProjectDto.setProjectTag1(projectTagList.get(0));
+            if(projectTagList.size()> 0) cleanCrewProjectDto.setProjectTag1(projectTagList.get(0));
 
             if (projectVLng.size() > 1) cleanCrewProjectDto.setProjectV2Lng(projectVLng.get(1));
             if (projectVLat.size() > 1) cleanCrewProjectDto.setProjectV2Lat(projectVLat.get(1));
@@ -91,9 +91,7 @@ public String getCrewName(Long crewNumber) {
                 cleanCrewProjectDto.setProjectVLat(0.0);
             }
             if (cleanCrewProjectDto.getProjectVName() == null ||
-                    cleanCrewProjectDto.getProjectVName().isEmpty() ||
-                    "string".equals(cleanCrewProjectDto.getProjectVName())) {
-
+                    cleanCrewProjectDto.getProjectVName().isEmpty()) {
                 cleanCrewProjectDto.setProjectVName("경유지 없음");
             }
             if (cleanCrewProjectDto.getProjectV2Lng() == null) {
@@ -136,7 +134,86 @@ public String getCrewName(Long crewNumber) {
         if (cleanCrewProjectDto.getProjectDLat() == null) cleanCrewProjectDto.setProjectDLat(0.0);
         if (cleanCrewProjectDto.getProjectDName() == null || cleanCrewProjectDto.getProjectDName().isEmpty()) cleanCrewProjectDto.setProjectDName("도착지 없음");
         crewProjectMapper.crewProjectInsert(cleanCrewProjectDto);
-         }
+         }*/
+    public void crewProjectRegister(ProjectRequestDto projectRequestDto){
+        CleanCrewProjectDto cleanCrewProjectDto = projectRequestDto.getCleanCrewProjectDto();
+
+        List<Double> projectVLng = projectRequestDto.getProjectVLng();
+        List<Double> projectVLat = projectRequestDto.getProjectVLat();
+        List<String> projectVName = projectRequestDto.getProjectVName();
+        List<String> projectTagList = projectRequestDto.getProjectTagList();
+
+        // 입력값이 null이 아닌지 확인 후 처리
+        if (projectVLng != null && projectVLat != null && projectVName != null && projectTagList != null) {
+            if (projectVLng.size() > 0) cleanCrewProjectDto.setProjectVLng(projectVLng.get(0));
+            if (projectVLat.size() > 0) cleanCrewProjectDto.setProjectVLat(projectVLat.get(0));
+            if (projectVName.size() > 0) cleanCrewProjectDto.setProjectVName(projectVName.get(0));
+            if (projectTagList.size() > 0) cleanCrewProjectDto.setProjectTag1(projectTagList.get(0));
+
+            if (projectVLng.size() > 1) cleanCrewProjectDto.setProjectV2Lng(projectVLng.get(1));
+            if (projectVLat.size() > 1) cleanCrewProjectDto.setProjectV2Lat(projectVLat.get(1));
+            if (projectVName.size() > 1) cleanCrewProjectDto.setProjectV2Name(projectVName.get(1));
+            if (projectTagList.size() > 1) cleanCrewProjectDto.setProjectTag2(projectTagList.get(1));
+
+            if (projectVLng.size() > 2) cleanCrewProjectDto.setProjectV3Lng(projectVLng.get(2));
+            if (projectVLat.size() > 2) cleanCrewProjectDto.setProjectV3Lat(projectVLat.get(2));
+            if (projectVName.size() > 2) cleanCrewProjectDto.setProjectV3Name(projectVName.get(2));
+            if (projectTagList.size() > 2) cleanCrewProjectDto.setProjectTag3(projectTagList.get(2));
+
+            if (projectTagList.size() > 3) cleanCrewProjectDto.setProjectTag4(projectTagList.get(3));
+        }
+
+        // 리스트 기본값 설정
+        if (cleanCrewProjectDto.getProjectVLng() == null) {
+            cleanCrewProjectDto.setProjectVLng(0.0);
+        }
+        if (cleanCrewProjectDto.getProjectVLat() == null) {
+            cleanCrewProjectDto.setProjectVLat(0.0);
+        }
+        if (cleanCrewProjectDto.getProjectVName() == null || cleanCrewProjectDto.getProjectVName().isEmpty()) {
+            cleanCrewProjectDto.setProjectVName("경유지 없음");
+        }
+        if (cleanCrewProjectDto.getProjectV2Lng() == null) {
+            cleanCrewProjectDto.setProjectV2Lng(0.0);
+        }
+        if (cleanCrewProjectDto.getProjectV2Lat() == null) {
+            cleanCrewProjectDto.setProjectV2Lat(0.0);
+        }
+        if (cleanCrewProjectDto.getProjectV2Name() == null || cleanCrewProjectDto.getProjectV2Name().isEmpty()) {
+            cleanCrewProjectDto.setProjectV2Name("경유지2 없음");
+        }
+        if (cleanCrewProjectDto.getProjectV3Lng() == null) {
+            cleanCrewProjectDto.setProjectV3Lng(0.0);
+        }
+        if (cleanCrewProjectDto.getProjectV3Lat() == null) {
+            cleanCrewProjectDto.setProjectV3Lat(0.0);
+        }
+        if (cleanCrewProjectDto.getProjectV3Name() == null || cleanCrewProjectDto.getProjectV3Name().isEmpty()) {
+            cleanCrewProjectDto.setProjectV3Name("경유지3 없음");
+        }
+        if (cleanCrewProjectDto.getProjectTag1() == null || cleanCrewProjectDto.getProjectTag1().isEmpty()) {
+            cleanCrewProjectDto.setProjectTag1("없음");
+        }
+        if (cleanCrewProjectDto.getProjectTag2() == null || cleanCrewProjectDto.getProjectTag2().isEmpty()) {
+            cleanCrewProjectDto.setProjectTag2("없음");
+        }
+        if (cleanCrewProjectDto.getProjectTag3() == null || cleanCrewProjectDto.getProjectTag3().isEmpty()) {
+            cleanCrewProjectDto.setProjectTag3("없음");
+        }
+        if (cleanCrewProjectDto.getProjectTag4() == null || cleanCrewProjectDto.getProjectTag4().isEmpty()) {
+            cleanCrewProjectDto.setProjectTag4("없음");
+        }
+
+// 필수 기본값 설정
+        if (cleanCrewProjectDto.getProjectSLng() == null) cleanCrewProjectDto.setProjectSLng(0.0);
+        if (cleanCrewProjectDto.getProjectSLat() == null) cleanCrewProjectDto.setProjectSLat(0.0);
+        if (cleanCrewProjectDto.getProjectSName() == null || cleanCrewProjectDto.getProjectSName().isEmpty()) cleanCrewProjectDto.setProjectSName("출발지 없음");
+        if (cleanCrewProjectDto.getProjectDLng() == null) cleanCrewProjectDto.setProjectDLng(0.0);
+        if (cleanCrewProjectDto.getProjectDLat() == null) cleanCrewProjectDto.setProjectDLat(0.0);
+        if (cleanCrewProjectDto.getProjectDName() == null || cleanCrewProjectDto.getProjectDName().isEmpty()) cleanCrewProjectDto.setProjectDName("도착지 없음");
+
+        crewProjectMapper.crewProjectInsert(cleanCrewProjectDto);
+    }
 
 
 //         크루 프로젝트 상세 보기

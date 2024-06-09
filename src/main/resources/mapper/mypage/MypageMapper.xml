@@ -70,15 +70,13 @@
         JOIN CLEAN_CREW CC on CMP.CREW_NUMBER = CC.CREW_NUMBER
         JOIN CLEAN_CREW_PROJECT CCP on CMP.CREW_PROJECT_NUMBER = CCP.CREW_PROJECT_NUMBER
         JOIN CREW_PROJECT_ROLE CPR on CMP.PROJECT_ROLE_NUMBER = CPR.PROJECT_ROLE_NUMBER
-        WHERE CU.USER_NUMBER=1
+        WHERE CU.USER_NUMBER=#{userNumber}
         ORDER BY CCP.PROJECT_DATE DESC
         ]]>
     </select>
 
 <!--    회원 탈퇴-->
-<delete id="deleteUserbyEmail">
 
-</delete>
 
 </mapper>
 

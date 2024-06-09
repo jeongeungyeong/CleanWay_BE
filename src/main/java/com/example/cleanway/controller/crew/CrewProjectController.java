@@ -13,6 +13,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +25,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/crew-project")
 @RequiredArgsConstructor
+@Slf4j
 @Tag(name = "Crew Project", description = "크루 프로젝트 API")
 public class CrewProjectController {
     private final CrewService crewService;
@@ -98,7 +100,7 @@ public class CrewProjectController {
     }
 
 //    크루 프로젝트 등록
-    @PostMapping("/{crewNumber}/add")
+/*    @PostMapping("/{crewNumber}/add")
     @Operation(summary = "크루 프로젝트 등록", description = "크루 프로젝트 등록합니다.")
     public ResponseEntity<String> makeProject(@PathVariable Long crewNumber,
                                               @Valid @RequestBody ProjectRequestDto projectRequestDto,
@@ -128,19 +130,27 @@ public class CrewProjectController {
         crewProjectService.projectJoinRegister(cleanMyProjectDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body("프로젝트가 성공적으로 등록되었습니다!");
-    }
+    }*/
 
-    //    크루 프로젝트 등록
-    /*@PostMapping("/{crewNumber}/add")
+    //    토큰 크루 프로젝트 등록
+    @PostMapping("/{crewNumber}/add")
     @Operation(summary = "크루 프로젝트 등록", description = "크루 프로젝트 등록합니다.")
     public ResponseEntity<String> makeProject(@PathVariable Long crewNumber,
                                               @Valid @RequestBody ProjectRequestDto projectRequestDto,
-                                              BindingResult bindingResult){
+                                              BindingResult bindingResult,
+                                              HttpServletRequest req){
         if (bindingResult.hasErrors()) {
             return ResponseEntity.badRequest().body("요청 데이터가 올바르지 않습니다.");
         }
-        Long userNumber = 1L;
-        // 크루원인지 확인
+        // 토큰에서 이메일 정보 가져오기
+        String userEmail = userService.getEmailFromToken(req);
+        System.out.println("토큰에서 추출한 이메일: " + userEmail);
+
+        // 토큰 검증 및 유저 정보 가져오기
+        UserDto user = userService.findKakaoEmail(userEmail);
+        // 사용자 번호 가져오기
+        Long userNumber = user.getUserNumber();
+
         if (!crewProjectService.isCrewMember(crewNumber, userNumber)) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body("크루에 먼저 가입해주세요!");
         }
@@ -164,52 +174,29 @@ public class CrewProjectController {
         crewProjectService.projectJoinRegister(cleanMyProjectDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body("프로젝트가 성공적으로 등록되었습니다!");
-    }*/
+    }
 
 //    크루 프로젝트 상세보기
-    @GetMapping("/detail/{crewNumber}/{crewProjectNumber}")
+/*    @GetMapping("/detail/{crewNumber}/{crewProjectNumber}")
     @Operation(summary = "크루 프로젝트 상세 조회", description = "크루 프로젝트 정보를 조회합니다.")
     public List<CrewTeamVo> projectDetailList(@PathVariable Long crewNumber,
                                               @PathVariable Long crewProjectNumber){
         return crewProjectService.findProjectDetailList(crewNumber,crewProjectNumber);
+    }*/
+
+    @GetMapping("/detail/{crewNumber}/{crewProjectNumber}")
+    @Operation(summary = "크루 프로젝트 상세 조회", description = "크루 프로젝트 정보를 조회합니다.")
+    public List<CrewTeamVo> projectDetailList(@PathVariable Long crewNumber,
+                                              @PathVariable Long crewProjectNumber){
+        log.info("Request received for crewNumber: {}, crewProjectNumber: {}", crewNumber, crewProjectNumber);
+        List<CrewTeamVo> details = crewProjectService.findProjectDetailList(crewNumber, crewProjectNumber);
+        log.info("Response: {}", details);
+        return details;
     }
 
     // 인증한 회원 포함 상세 페이지 get
 
     //    크루원 인증하기 post
-/*    @PostMapping("/recommend/{madangNumber}")
-    public ResponseEntity<String> CrewRecommend(@PathVariable Long crewNumber,
-                                                @PathVariable Long crewProjectNumber,
-                                                HttpServletRequest req){
-        // 토큰에서 이메일 정보 가져오기
-        String userEmail = userService.getEmailFromToken(req);
-        System.out.println("토큰에서 추출한 이메일: " + userEmail);
-
-        // 토큰 검증 및 유저 정보 가져오기
-        UserDto user = userService.findKakaoEmail(userEmail);
-
-        // 토큰에 포함된 유저 번호를 가져옵니다.
-        Long userNumber = user.getUserNumber();
-        System.out.println("유저 번호: " + userNumber);
-        CrewRecommendDto crewRecommendDto = new CrewRecommendDto();
-        crewRecommendDto.setUserNumber(userNumber);
-
-
-        if(userNumber == null){
-            return ResponseEntity
-                    .status(HttpStatus.UNAUTHORIZED)
-                    .body("로그인이 필요한 서비스입니다.");
-        }
-
-        try {
-            recommendService.register(madangRecommendDto);
-            return ResponseEntity.ok("추천 완료");
-        } catch (IllegalStateException e) {
-            return ResponseEntity
-                    .status(HttpStatus.BAD_REQUEST)
-                    .body(e.getMessage());
-        }
-    }*/
 
 
 
@@ -228,6 +215,14 @@ public class CrewProjectController {
         // 사용자 번호 가져오기
          Long userNumber = user.getUserNumber();
 
+        if (!crewProjectService.isCrewMember(crewNumber, userNumber)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("크루에 먼저 가입해주세요!");
+        }
+//        크루 이름 가져오기
+        String crewName = crewProjectService.getCrewName(crewNumber);
+        if (crewName == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("크루를 찾을 수 없습니다.");
+        }
 
         CleanMyProjectDto cleanMyProjectDto = new CleanMyProjectDto();
         cleanMyProjectDto.setUserNumber(userNumber);
@@ -357,5 +352,5 @@ public List<ProjectMemberVo> projectMemberList(@PathVariable Long crewNumber,
         return ResponseEntity.ok(response);
     }*/
 
-    //    크루원 - 크루탈퇴
+    //    내 크루 목록 삭제
 }
