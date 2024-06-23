@@ -33,15 +33,6 @@ public class CrewProjectController {
     private final UserService userService;
 
 //    크루방 상세 보기
-/*    @GetMapping("/team/{crewNumber}")
-    @Operation(summary = "크루방 상세 조회", description = "크루방 정보를 조회합니다.")
-    public List<CrewTeamVo> crewTeamList(@PathVariable Long crewNumber){
-        List<CrewTop3Vo> crewTop3VoList = crewProjectService.findCrewTOP3List(crewNumber);
-        CrewTeamVo crewTeamVo = new CrewTeamVo();
-        crewTeamVo.setCrewTop3VoList(crewTop3VoList);
-        List<CrewTeamVo> crewProjectList = crewProjectService.findCrewProjectList(crewNumber);
-        return crewProjectList;
-    }*/
 
     @GetMapping("/team/{crewNumber}")
     @Operation(summary = "크루방 상세 조회", description = "크루방 정보를 조회합니다.")
@@ -99,40 +90,7 @@ public class CrewProjectController {
         }
     }
 
-//    크루 프로젝트 등록
-/*    @PostMapping("/{crewNumber}/add")
-    @Operation(summary = "크루 프로젝트 등록", description = "크루 프로젝트 등록합니다.")
-    public ResponseEntity<String> makeProject(@PathVariable Long crewNumber,
-                                              @Valid @RequestBody ProjectRequestDto projectRequestDto,
-                                              BindingResult bindingResult,
-                                              @SessionAttribute("userNumber") Long userNumber){
-        if (bindingResult.hasErrors()) {
-            return ResponseEntity.badRequest().body("요청 데이터가 올바르지 않습니다.");
-        }
-//        크루 이름 가져오기
-
-        // 크루원인지 확인
-        if (!crewProjectService.isCrewMember(crewNumber, userNumber)) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("크루에 먼저 가입해주세요!");
-        }
-
-//        프로젝트 등록
-        projectRequestDto.getCleanCrewProjectDto().setCrewNumber(crewNumber);
-        projectRequestDto.getCleanCrewProjectDto().setUserNumber(userNumber);
-        crewProjectService.crewProjectRegister(projectRequestDto);
-        Long crewProjectNumber = projectRequestDto.getCleanCrewProjectDto().getCrewProjectNumber();
-        //크루 프로젝트 참여
-        CleanMyProjectDto cleanMyProjectDto = new CleanMyProjectDto();
-        cleanMyProjectDto.setCrewProjectNumber(crewProjectNumber);
-        cleanMyProjectDto.setUserNumber(userNumber);
-        cleanMyProjectDto.setProjectRoleNumber(1L);
-        cleanMyProjectDto.setCrewNumber(crewNumber);
-        crewProjectService.projectJoinRegister(cleanMyProjectDto);
-
-        return ResponseEntity.status(HttpStatus.CREATED).body("프로젝트가 성공적으로 등록되었습니다!");
-    }*/
-
-    //    토큰 크루 프로젝트 등록
+    //    크루 프로젝트 등록
     @PostMapping("/{crewNumber}/add")
     @Operation(summary = "크루 프로젝트 등록", description = "크루 프로젝트 등록합니다.")
     public ResponseEntity<String> makeProject(@PathVariable Long crewNumber,
@@ -177,12 +135,7 @@ public class CrewProjectController {
     }
 
 //    크루 프로젝트 상세보기
-/*    @GetMapping("/detail/{crewNumber}/{crewProjectNumber}")
-    @Operation(summary = "크루 프로젝트 상세 조회", description = "크루 프로젝트 정보를 조회합니다.")
-    public List<CrewTeamVo> projectDetailList(@PathVariable Long crewNumber,
-                                              @PathVariable Long crewProjectNumber){
-        return crewProjectService.findProjectDetailList(crewNumber,crewProjectNumber);
-    }*/
+
 
     @GetMapping("/detail/{crewNumber}/{crewProjectNumber}")
     @Operation(summary = "크루 프로젝트 상세 조회", description = "크루 프로젝트 정보를 조회합니다.")
@@ -193,11 +146,6 @@ public class CrewProjectController {
         log.info("Response: {}", details);
         return details;
     }
-
-    // 인증한 회원 포함 상세 페이지 get
-
-    //    크루원 인증하기 post
-
 
 
 //    크루 프로젝트 참여하기
@@ -241,42 +189,6 @@ public class CrewProjectController {
     }
 
 
-//    크루 프로젝트 참여하기
-/*@PostMapping("/join/{crewNumber}/{crewProjectNumber}")
-@Operation(summary = "크루 프로젝트원 참여", description = "사용자가 크루 프로젝트에 참여합니다.")
-public ResponseEntity<String> joinProject (@PathVariable Long crewNumber,
-                                           @PathVariable Long crewProjectNumber)
-{
-    Long userNumber = 2L;
-    // 크루원인지 확인
-    if (!crewProjectService.isCrewMember(crewNumber, userNumber)) {
-        return ResponseEntity.status(HttpStatus.FORBIDDEN).body("크루에 먼저 가입해주세요!");
-    }
-    //        크루 이름 가져오기
-    String crewName = crewProjectService.getCrewName(crewNumber);
-    if (crewName == null) {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("크루를 찾을 수 없습니다.");
-    }
-
-    CleanMyProjectDto cleanMyProjectDto = new CleanMyProjectDto();
-    cleanMyProjectDto.setUserNumber(userNumber);
-    cleanMyProjectDto.setCrewNumber(crewNumber);
-    cleanMyProjectDto.setCrewProjectNumber(crewProjectNumber);
-    cleanMyProjectDto.setProjectRoleNumber(2L);
-    try{
-        crewProjectService.projectJoinRegister(cleanMyProjectDto);
-        return ResponseEntity.status(HttpStatus.SEE_OTHER)
-                .header(HttpHeaders.LOCATION,"/detail/"+crewNumber+"/"+crewProjectNumber)
-                .build();
-    } catch (Exception e){
-        e.printStackTrace();
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("크루 프로젝트 참여에 실패했습니다.");
-    }
-}*/
-
-
-
-    
 //    크루 프로젝트원 상세 조회 - 크루장&프로젝트장(관리자 서비스)
 @GetMapping("/detail/{crewNumber}/{crewProjectNumber}/member")
 @Operation(summary = "크루프로젝트원 정보 상세 조회", description = "크루원 프로젝트원 정보를 조회합니다.")
@@ -284,14 +196,6 @@ public List<ProjectMemberVo> projectMemberList(@PathVariable Long crewNumber,
                                             @PathVariable Long crewProjectNumber){
     return crewProjectService.projectMemberList(crewNumber,crewProjectNumber);
 }
-
-
-
-//    크루장 - 크루원 탈퇴
-//    크루장 - 크루 삭제
-//    프로젝트장 - 프로젝트원 강퇴
-//    프로젝트장 - 프로젝트 삭제
-//    프로젝트원 - 프로젝트 삭제
 
     //    내 크루 목록 보기
     @GetMapping("/mycrew")
@@ -309,15 +213,7 @@ public List<ProjectMemberVo> projectMemberList(@PathVariable Long crewNumber,
         return crewService.myCrewList(userNumber);
     }
 
-  /*  //    내 크루 목록 보기
-    @GetMapping("/mycrew")
-    @Operation(summary = "내 크루 리스트 조회", description = "참여한 크루 목록을 조회합니다.")
-    public List<MyCrewVo> myCrewList(){
-        // 세션에서 userNumber 가져오기
-        Long userNumber = 1L;
-        System.out.println(userNumber);
-        return crewService.myCrewList(userNumber);
-    }*/
+
 
 //    내 크루 목록 검색어 조회
   @GetMapping("/mycrew/search")
@@ -340,17 +236,4 @@ public List<ProjectMemberVo> projectMemberList(@PathVariable Long crewNumber,
     return ResponseEntity.ok(response);
 }
 
-    //    내 크루 목록 검색어 조회
-/*    @GetMapping("/mycrew/search")
-    @Operation(summary = "내 크루 검색어 조회", description = "가입된 내 크루를 검색을 통해 조회합니다.")
-    public ResponseEntity<MyCrewSearchResponse> searchCrewByWord(@RequestParam("searchWord") String searchWord) {
-        Long userNumber = 1L;
-        List<MyCrewVo> myCrewByWordList = crewService.findMyCrewByWord(userNumber,searchWord);
-
-        MyCrewSearchResponse response = new MyCrewSearchResponse(myCrewByWordList, searchWord);
-
-        return ResponseEntity.ok(response);
-    }*/
-
-    //    내 크루 목록 삭제
 }

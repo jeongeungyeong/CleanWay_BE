@@ -52,7 +52,6 @@ public class UserController {
     public ResponseEntity<String> kakaoCallback(@RequestParam("code") String code,
                                                 HttpSession session){
         // SETP1 : 인가코드 받기
-        // (카카오 인증 서버는 서비스 서버의 Redirect URI로 인가 코드를 전달합니다.)
         System.out.println("코드  " +code);
 
         // STEP2: 인가코드를 기반으로 토큰(Access Token) 발급

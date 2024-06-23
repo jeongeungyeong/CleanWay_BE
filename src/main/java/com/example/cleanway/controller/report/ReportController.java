@@ -45,39 +45,9 @@ public class ReportController {
 
     }
 
-/*    @PostMapping("/add")
-    @Operation(summary = "제보 등록", description = "새로운 제보를 등록합니다.")
-    public ResponseEntity<String> addReport(@Valid @RequestBody ReportRequestDto reportRequestDto,
-                                            BindingResult bindingResult) {
 
-        Logger logger = LoggerFactory.getLogger(ReportController.class);
 
-        logger.info("Received reportRequestDto: {}", reportRequestDto);
-
-        Long userNumber = 1L;
-
-        try {
-            reportRequestDto.getCleanReportDto().setUserNumber(userNumber);
-            // 제보등록
-            reportService.reportRegister(reportRequestDto.getCleanReportDto());
-            Long reportNumber = reportRequestDto.getCleanReportDto().getReportNumber();
-
-            // 제보 이미지 등록
-            reportImgService.saveFileFromBase64(reportRequestDto.getBase64EncodedImage(), reportNumber);
-
-            // 위치 정보 등록
-            reportRequestDto.getReportSpotDto().setReportNumber(reportNumber);
-            reportService.spotRegister(reportRequestDto.getReportSpotDto());
-
-            // 성공적으로 등록
-            return ResponseEntity.status(HttpStatus.CREATED).body("제보가 성공적으로 등록됐습니다!");
-        } catch (IOException e) {
-            e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("제보 등록에 실패했습니다!");
-        }
-    }*/
-
-//    토큰 사용
+//    제보 등록
     @PostMapping("/add")
     @Operation(summary = "제보 등록", description = "새로운 제보를 등록합니다.")
     public ResponseEntity<String> addReport(@Valid @RequestBody ReportRequestDto reportRequestDto,
@@ -120,25 +90,6 @@ public class ReportController {
         }
     }
 
-//    제보 장소 즐겨찾기
-/*@PostMapping("/saveSpot/{spotNumber}")
-    @Operation(summary = "제보 장소 저장", description = "제보된 장소를 내 장소에 저장합니다.")
-    public ResponseEntity<String> saveSpot(@PathVariable Long spotNumber){
-
-    Long userNumber = 1L;
-    CleanSpotDto cleanSpotDto = new CleanSpotDto();
-    cleanSpotDto.setSpotNumber(spotNumber);
-    cleanSpotDto.setUserNumber(userNumber);
-
-    try{reportService.mySpotRegister(cleanSpotDto);
-    return ResponseEntity.status(HttpStatus.CREATED).body("내 장소에 성공적으로 등록됐습니다.");
-    } catch (Exception e){
-        e.printStackTrace();
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("내 장소에 저장을 실패했습니다.");
-    }
-}*/
-
-//토큰 활용
 //    제보 장소 즐겨찾기
 @PostMapping("/saveSpot/{spotNumber}")
 @Operation(summary = "제보 장소 저장", description = "제보된 장소를 내 장소에 저장합니다.")
