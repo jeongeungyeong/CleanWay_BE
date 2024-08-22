@@ -15,9 +15,9 @@ public interface MypageMapper {
      //    닉네임 업데이트
     void updateNickname(MyInfoVo myInfoVo);
     //    내 장소 보기
-    public List<MySpotVo> selectMySpot(Long userNumber);
+     List<MySpotVo> selectMySpot(Long userNumber);
     //    내 루트 보기
-    public List<CleanRouteDto> selectRouteList(Long userNumber);
+     List<CleanRouteDto> selectRouteList(Long userNumber);
 //    내 플로깅 보기
-    public List<MyProjectVo> selectMyProjectList(Long userNumber);
+     List<MyProjectVo> selectMyProjectList(Long userNumber);
 }

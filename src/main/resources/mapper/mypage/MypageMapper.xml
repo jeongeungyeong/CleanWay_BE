@@ -18,11 +18,7 @@
     set USER_NICKNAME = #{newNickname}
     where USER_NUMBER = #{userNumber}
    </update>
-<!--    <update id="updateNickname" parameterType="userDto">
-    update CLEAN_USER
-    set USER_NICKNAME = #{UserNickname}
-    where USER_NUMBER = #{userNumber}
-</update>-->
+
 
 
     <!--내 장소 보기-->
@@ -75,7 +71,6 @@
         ]]>
     </select>
 
-<!--    회원 탈퇴-->
 
 
 </mapper>

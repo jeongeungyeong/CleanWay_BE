@@ -9,22 +9,22 @@ import java.util.List;
 @Mapper
 public interface ReportMapper {
 //    제보 리스트 조회
-    public List<ReportVo> selectReportList();
+     List<ReportVo> selectReportList();
 
     //제보 글쓰기
-    public void reportInsert (CleanReportDto cleanReportDto);
+     void reportInsert (CleanReportDto cleanReportDto);
 
 //    제보 reportNumber 가지고 오기
-    public long getNextReportNumber();
+     long getNextReportNumber();
 
 //    제보 전체 카운트
-    public int selectTotal();
+     int selectTotal();
 
 //    제보 스팟 등록
-    public void spotInsert(ReportSpotDto reportSpotDto);
+     void spotInsert(ReportSpotDto reportSpotDto);
 
 //    내 장소 등록
-    public void mySpotInsert(CleanSpotDto cleanSpotDto);
+     void mySpotInsert(CleanSpotDto cleanSpotDto);
 
 
 }

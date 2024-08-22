@@ -84,16 +84,4 @@ public String getRandomProfileImage() {
         return null; // 토큰이 없는 경우 null을 반환합니다.
     }
 
-    // 토큰 정보 추출
-/*    public String extractTokenFromHeader(HttpServletRequest request) {
-        // "Authorization" 헤더에서 토큰을 추출합니다.
-        String token = request.getHeader("Authorization");
-
-        // 토큰이 있는지 확인하고 반환합니다.
-        if (token != null && !token.isEmpty()) {
-            return token; // JWT 문자열을 반환합니다.
-        }
-
-        return null; // 토큰이 없는 경우 null을 반환합니다.
-    }*/
 }

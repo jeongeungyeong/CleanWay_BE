@@ -17,12 +17,12 @@ public interface CrewProjectMapper {
 
     // 크루 프로젝트 모집 글쓰기
    /* 최초 모집은 프로젝트 모집도 함께 진행*/
-    public void crewProjectInsert(CleanCrewProjectDto cleanCrewProjectDto);
+     void crewProjectInsert(CleanCrewProjectDto cleanCrewProjectDto);
 //    크루 이름 가져오기
 String selectCrewName(Long crewNumber);
 
     // 크루 프로젝트 참여하기
-    public void projectJoinInsert(CleanMyProjectDto cleanMyProjectDto);
+     void projectJoinInsert(CleanMyProjectDto cleanMyProjectDto);
 
     //   참여 크루 프로젝트 조회하기
     CleanMyProjectDto selectProjectJoin(Long crewProjectNumber, Long userNumber);
@@ -31,26 +31,26 @@ String selectCrewName(Long crewNumber);
     int selectProjectJoinCount (CleanMyProjectDto cleanMyProjectDto);
 
     //크루방 홈 리스트(예정 프로젝트)
-    public List<CrewTeamVo> selectCrewProject(Long crewNumber);
+     List<CrewTeamVo> selectCrewProject(Long crewNumber);
 
 //    크루방 TOP3
-     public List<CrewTop3Vo> selectCrewTOP3(Long crewNumber);
+      List<CrewTop3Vo> selectCrewTOP3(Long crewNumber);
 
     //    크루원 정보 조회
-    public List<CrewMemberVo> selectCrewMemberByNum (Long crewNumber);
+     List<CrewMemberVo> selectCrewMemberByNum (Long crewNumber);
 
 //    크루장 조회
-    public CrewMemberVo selectCrewMemberByRole(Long crewNumber);
+     CrewMemberVo selectCrewMemberByRole(Long crewNumber);
 
 
     // 크루원 강퇴
-    public void deleteCrewMember(Long userNumber);
+     void deleteCrewMember(Long userNumber);
 
     //    크루 프로젝트 디테일
-    public List<CrewTeamVo> selectProjectDetail(Long crewNumber, Long crewProjectNumber);
+     List<CrewTeamVo> selectProjectDetail(Long crewNumber, Long crewProjectNumber);
 
 //    프로젝트 참여인원 정보 조회
-    public List<ProjectMemberVo> selectProjectMemberByNum (Long crewNumber, Long crewProjectNumber);
+     List<ProjectMemberVo> selectProjectMemberByNum (Long crewNumber, Long crewProjectNumber);
 
 //    프로젝트 참가자들이 특정 프로젝트 인증 추천했는지 여부 검사
     int selectProjectRecommend(CrewRecommendDto crewRecommendDto);

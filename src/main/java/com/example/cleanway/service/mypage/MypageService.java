@@ -17,10 +17,6 @@ public class MypageService {
     private final MypageMapper mypageMapper;
 
     //회원 정보 조회
-/*    public UserDto findUser(Long userNumber){
-        return mypageMapper.selectUser(userNumber);
-    }
-   */
     public MyPloggingVo findUser(Long userNumber){
         return mypageMapper.selectUser(userNumber);
     }

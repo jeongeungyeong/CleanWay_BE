@@ -6,8 +6,8 @@ import org.springframework.stereotype.Component;
 @Mapper
 public interface ReportImgMapper {
 //이미지 사진 파일 등록
-    public void insertImg(ReportImgDto reportImgDto);
+     void insertImg(ReportImgDto reportImgDto);
 
 //    이미지
-    public ReportImgDto selectReportImg(Long reportNumber);
+     ReportImgDto selectReportImg(Long reportNumber);
 }

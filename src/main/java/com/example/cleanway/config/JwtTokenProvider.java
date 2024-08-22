@@ -20,10 +20,6 @@ public class JwtTokenProvider {
     private final Logger logger = LoggerFactory.getLogger(this.getClass());
     private final SecretKey key;
 
-/*    public JwtTokenProvider(@Value("${custom.jwt.secretKey}") String secretKey) {
-        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
-        this.key = Keys.hmacShaKeyFor(keyBytes);
-    }*/
 
     public JwtTokenProvider(@Value("${custom.jwt.secretKey}") String secretKey) {
         this.key = Keys.secretKeyFor(SignatureAlgorithm.HS512);
@@ -66,10 +62,10 @@ public class JwtTokenProvider {
 
 
     public String decodeTokenAndGetEmail(String token) {
-        // 토큰을 디코딩하여 클레임 객체를 추출합니다.
+        // 토큰을 디코딩하여 클레임 객체를 추출
         Claims claims = Jwts.parserBuilder().setSigningKey(this.key).build().parseClaimsJws(token).getBody();
 
-        // 클레임에서 "userEmail" 값을 추출하여 반환합니다.
+        // 클레임에서 "userEmail" 값을 추출하여 반환합
         return claims.get("userEmail", String.class);
     }
 }

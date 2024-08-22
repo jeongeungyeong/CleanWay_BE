@@ -2,7 +2,6 @@ package com.example.cleanway.controller.crew;
 
 import com.example.cleanway.domain.dto.crew.*;
 import com.example.cleanway.domain.dto.user.UserDto;
-import com.example.cleanway.domain.response.CrewSearchResponse;
 import com.example.cleanway.domain.response.MyCrewSearchResponse;
 import com.example.cleanway.domain.vo.crew.*;
 import com.example.cleanway.service.crew.CrewProjectService;
